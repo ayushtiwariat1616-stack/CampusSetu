@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { api } from '../api';
 
-export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }) {
+export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout, onOpenSos }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifs, setShowNotifs] = useState(false);
@@ -146,6 +146,35 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }
 
           {/* User / Auth Area */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Emergency SOS Button */}
+            {onOpenSos && (
+              <button
+                type="button"
+                onClick={onOpenSos}
+                style={{
+                  backgroundColor: '#dc2626',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: 'var(--radius-full)',
+                  padding: '6px 14px',
+                  fontSize: '0.8125rem',
+                  fontWeight: '800',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 0 12px rgba(220, 38, 38, 0.45)',
+                  cursor: 'pointer',
+                  letterSpacing: '0.01em',
+                  transition: 'all 0.15s ease'
+                }}
+                className="card-interactive"
+                title="Immediate SOS: Women's Safety & Anti-Harassment (Direct to Dean SW)"
+              >
+                <span className="pulse-dot" style={{ backgroundColor: '#ffffff', width: '8px', height: '8px' }}></span>
+                <span>🚨 SOS</span>
+              </button>
+            )}
+
             {currentUser ? (
               <>
                 {/* Notification Bell */}

@@ -14,6 +14,16 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeTab, setActiveTab] = useState('landing');
   const [loading, setLoading] = useState(true);
+  const [externalSosOpen, setExternalSosOpen] = useState(false);
+
+  const handleOpenSos = () => {
+    if (currentUser?.role === 'STUDENT') {
+      setActiveTab('student-dashboard');
+      setExternalSosOpen(true);
+    } else {
+      setActiveTab('login');
+    }
+  };
 
   const checkCurrentUser = useCallback(async () => {
     try {
@@ -116,6 +126,7 @@ export default function App() {
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onLogout={handleLogout}
+        onOpenSos={handleOpenSos}
       />
 
       {/* Main Page Content */}
@@ -142,7 +153,11 @@ export default function App() {
         )}
 
         {activeTab === 'student-dashboard' && (
-          <StudentDashboard currentUser={currentUser} />
+          <StudentDashboard
+            currentUser={currentUser}
+            externalSosOpen={externalSosOpen}
+            onResetExternalSos={() => setExternalSosOpen(false)}
+          />
         )}
 
         {activeTab === 'operator-dashboard' && (

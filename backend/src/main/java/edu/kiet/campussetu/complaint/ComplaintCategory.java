@@ -8,5 +8,6 @@ public enum ComplaintCategory {
     ELECTRICAL_PLUMBING,
     CLEANLINESS,
     MESS_FOOD,
+    WOMEN_SAFETY_SOS,
     OTHER
 }

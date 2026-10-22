@@ -322,6 +322,8 @@ export default function OperatorDashboard({ currentUser }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {complaints.map((c) => {
                     const isSelected = selectedComplaint?.id === c.id;
+                    const isSos = c.category === 'WOMEN_SAFETY_SOS';
+                    const isCritical = c.urgency === 'CRITICAL';
                     const badgeClass = `badge badge-${c.status.toLowerCase()}`;
 
                     return (
@@ -331,23 +333,34 @@ export default function OperatorDashboard({ currentUser }) {
                           setSelectedComplaint(c);
                           loadComplaintDetail(c.id);
                         }}
-                        className="card"
+                        className="card card-interactive"
                         style={{
                           padding: '16px',
                           cursor: 'pointer',
-                          borderColor: isSelected ? 'var(--accent-teal)' : 'var(--border-subtle)',
-                          backgroundColor: isSelected ? 'var(--accent-teal-subtle)' : '#ffffff',
+                          borderLeft: isSos || isCritical ? '4px solid #dc2626' : (isSelected ? '4px solid var(--accent-teal)' : '1px solid var(--border-subtle)'),
+                          borderColor: isSelected ? 'var(--accent-teal)' : (isSos ? '#fca5a5' : 'var(--border-subtle)'),
+                          backgroundColor: isSelected ? 'var(--accent-teal-subtle)' : (isSos ? '#fff5f5' : '#ffffff'),
                           transition: 'all 0.15s ease'
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                          <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)' }}>
-                            {c.trackingNumber}
-                          </span>
-                          <span className={badgeClass}>{c.status.replace('_', ' ')}</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            {isSos && <span className="pulse-dot" style={{ backgroundColor: '#dc2626', width: '8px', height: '8px' }}></span>}
+                            <span style={{ fontSize: '0.75rem', fontWeight: '800', color: isSos ? '#dc2626' : 'var(--text-muted)' }}>
+                              {c.trackingNumber}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            {isSos && (
+                              <span className="badge" style={{ backgroundColor: '#dc2626', color: '#ffffff', fontSize: '0.65rem', padding: '2px 6px', fontWeight: '800' }}>
+                                🚨 EMERGENCY SOS
+                              </span>
+                            )}
+                            <span className={badgeClass}>{c.status.replace('_', ' ')}</span>
+                          </div>
                         </div>
 
-                        <div style={{ fontWeight: '700', color: 'var(--primary-navy)', fontSize: '0.9375rem', marginBottom: '4px' }}>
+                        <div style={{ fontWeight: '700', color: isSos ? '#991b1b' : 'var(--primary-navy)', fontSize: '0.9375rem', marginBottom: '4px' }}>
                           {c.title}
                         </div>
 
@@ -356,8 +369,8 @@ export default function OperatorDashboard({ currentUser }) {
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                          <span>Reporter: {c.student?.fullName || 'Student'}</span>
-                          <span>Urgency: <strong>{c.urgency}</strong></span>
+                          <span>Reporter: <strong>{c.student?.fullName || 'Student'}</strong></span>
+                          <span>Urgency: <strong style={{ color: isCritical ? '#dc2626' : 'inherit' }}>{c.urgency}</strong></span>
                         </div>
                       </div>
                     );
@@ -388,6 +401,27 @@ export default function OperatorDashboard({ currentUser }) {
                     Close
                   </button>
                 </div>
+
+                {/* Emergency Anti-Harassment Banner */}
+                {(complaintDetail.complaint.category === 'WOMEN_SAFETY_SOS' || complaintDetail.complaint.urgency === 'CRITICAL') && (
+                  <div style={{
+                    backgroundColor: '#fff1f2',
+                    border: '1.5px solid #fecaca',
+                    borderRadius: '8px',
+                    padding: '12px 16px',
+                    color: '#991b1b',
+                    fontSize: '0.8125rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}>
+                    <span className="pulse-dot" style={{ backgroundColor: '#dc2626', width: '10px', height: '10px' }}></span>
+                    <div>
+                      <strong>🚨 EXECUTIVE WOMEN'S SAFETY & ANTI-HARASSMENT DIRECT DISPATCH</strong>
+                      <div>Assigned directly to Dean of Student Welfare (Dean SW) & ICC with CRITICAL urgency. Immediate security and administrative priority.</div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Reporter Identity */}
                 <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '12px 16px', borderRadius: '8px', fontSize: '0.8125rem' }}>

@@ -66,6 +66,19 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+  submitSosReport: (locationDetail, description = '') =>
+    request('/api/complaints', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: "EMERGENCY SOS: Women's Safety & Anti-Harassment Distress Alert",
+        category: 'WOMEN_SAFETY_SOS',
+        locationType: 'CAMPUS_FACILITY',
+        locationDetail: locationDetail || 'Campus Location (Emergency Alert)',
+        urgency: 'CRITICAL',
+        sensitive: true,
+        description: description?.trim() || "Immediate assistance requested via Campus Women's Safety SOS. Escalated with highest priority directly to Dean of Student Welfare (Dean SW)."
+      }),
+    }),
   getMyComplaints: (page = 0, size = 20) =>
     request(`/api/complaints/my?page=${page}&size=${size}`),
   getComplaintDetails: (id) => request(`/api/complaints/${id}`),

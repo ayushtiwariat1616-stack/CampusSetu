@@ -86,12 +86,19 @@ public class ComplaintService {
         complaint.setTitle(req.title().trim());
         complaint.setDescription(req.description().trim());
         complaint.setCategory(req.category());
-        complaint.setLocationType(req.locationType());
+        complaint.setLocationType(req.locationType() != null ? req.locationType() : ComplaintLocationType.CAMPUS_FACILITY);
         complaint.setLocationDetail(req.locationDetail().trim());
         complaint.setSpecificHostelCode(req.specificHostelCode());
         complaint.setSpecificDepartmentCode(req.specificDepartmentCode());
-        complaint.setUrgency(req.urgency() != null ? req.urgency() : ComplaintUrgency.MEDIUM);
-        complaint.setSensitive(req.sensitive());
+
+        if (req.category() == ComplaintCategory.WOMEN_SAFETY_SOS) {
+            complaint.setUrgency(ComplaintUrgency.CRITICAL);
+            complaint.setSensitive(true);
+        } else {
+            complaint.setUrgency(req.urgency() != null ? req.urgency() : ComplaintUrgency.MEDIUM);
+            complaint.setSensitive(req.sensitive());
+        }
+
         complaint.setStatus(ComplaintStatus.SUBMITTED);
         complaint.setCurrentQueueCode(decision.queueCode());
 
@@ -557,6 +564,8 @@ public class ComplaintService {
             } else if ("SERVICE".equalsIgnoreCase(a.getScopeType())) {
                 queueCodes.add("QUEUE_SERVICE_" + target.toUpperCase().replace("_SERVICES", "").replace("CAMPUS_", ""));
                 queueCodes.add("QUEUE_SERVICE_" + target.toUpperCase());
+            } else if ("DEAN_SW".equalsIgnoreCase(a.getOperatorRole()) || "DEAN_SW".equalsIgnoreCase(a.getScopeType()) || "CAMPUS_WIDE".equalsIgnoreCase(target)) {
+                queueCodes.add("QUEUE_DEAN_STUDENT_WELFARE");
             }
         }
         return new ArrayList<>(queueCodes);

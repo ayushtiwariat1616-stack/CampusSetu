@@ -24,11 +24,17 @@ import {
   CheckCheck,
   Trash2,
   ExternalLink,
-  FileText
+  FileText,
+  ShieldAlert,
+  PhoneCall,
+  MapPin,
+  Radio,
+  LifeBuoy,
+  ShieldCheck
 } from 'lucide-react';
 import { api } from '../api';
 
-export default function StudentDashboard({ currentUser }) {
+export default function StudentDashboard({ currentUser, externalSosOpen, onResetExternalSos }) {
   const [activeTab, setActiveTab] = useState('my-complaints'); // 'my-complaints', 'submit', 'shared-incidents', 'academics'
   const [complaints, setComplaints] = useState([]);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
@@ -85,6 +91,48 @@ export default function StudentDashboard({ currentUser }) {
   const [uploadingPdf, setUploadingPdf] = useState(false);
   const [uploadPdfMsg, setUploadPdfMsg] = useState('');
   const [uploadPdfError, setUploadPdfError] = useState('');
+
+  // Women's Safety & Anti-Harassment Priority SOS State
+  const [showSosModal, setShowSosModal] = useState(false);
+  const [sosLocation, setSosLocation] = useState('');
+  const [sosDescription, setSosDescription] = useState('');
+  const [sosLoading, setSosLoading] = useState(false);
+  const [sosError, setSosError] = useState('');
+  const [sosSuccessResult, setSosSuccessResult] = useState(null);
+
+  useEffect(() => {
+    if (externalSosOpen) {
+      setShowSosModal(true);
+      if (onResetExternalSos) onResetExternalSos();
+    }
+  }, [externalSosOpen, onResetExternalSos]);
+
+  const handleDispatchSos = async (locationOverride, descOverride) => {
+    const loc = (locationOverride !== undefined ? locationOverride : sosLocation).trim();
+    if (!loc) {
+      setSosError('Please enter or select your current campus location.');
+      return;
+    }
+    setSosLoading(true);
+    setSosError('');
+    try {
+      const res = await api.submitSosReport(loc, descOverride !== undefined ? descOverride : sosDescription);
+      if (res?.data) {
+        setSosSuccessResult(res.data);
+        setSosLocation('');
+        setSosDescription('');
+        setSuccess(`🚨 Emergency SOS dispatched! Ticket #${res.data.trackingNumber} routed directly to Dean SW (Student Welfare) with CRITICAL priority.`);
+        await loadMyComplaints();
+        setSelectedComplaint(res.data);
+        loadComplaintDetail(res.data.id);
+        setActiveTab('my-complaints');
+      }
+    } catch (err) {
+      setSosError(err.message || 'Failed to dispatch emergency SOS alert.');
+    } finally {
+      setSosLoading(false);
+    }
+  };
 
   const loadComplaintDetail = useCallback(async (id) => {
     try {
@@ -390,7 +438,26 @@ export default function StudentDashboard({ currentUser }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setShowSosModal(true)}
+              className="btn card-interactive"
+              style={{
+                backgroundColor: '#dc2626',
+                color: '#ffffff',
+                border: 'none',
+                fontWeight: '800',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '9px 16px',
+                boxShadow: '0 0 14px rgba(220, 38, 38, 0.45)'
+              }}
+              title="Immediate Women's Safety & Anti-Harassment SOS to Dean SW"
+            >
+              <span className="pulse-dot" style={{ backgroundColor: '#ffffff', width: '8px', height: '8px' }}></span>
+              <span>🚨 Women's Safety SOS</span>
+            </button>
             <button
               onClick={() => setActiveTab('submit')}
               className="btn btn-primary"
@@ -555,6 +622,25 @@ export default function StudentDashboard({ currentUser }) {
           >
             <Sparkles size={14} color="#f8b81f" />
             AI Study Assistant & Notes
+          </button>
+          <button
+            onClick={() => setShowSosModal(true)}
+            className="btn btn-sm card-interactive"
+            style={{
+              marginLeft: 'auto',
+              backgroundColor: '#dc2626',
+              color: '#ffffff',
+              border: 'none',
+              fontWeight: '800',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 14px',
+              boxShadow: '0 0 10px rgba(220, 38, 38, 0.4)'
+            }}
+          >
+            <span className="pulse-dot" style={{ backgroundColor: '#ffffff', width: '7px', height: '7px' }}></span>
+            <span>🚨 Instant SOS to Dean SW</span>
           </button>
         </div>
 
@@ -786,6 +872,8 @@ export default function StudentDashboard({ currentUser }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {complaints.map((c) => {
                     const isSelected = selectedComplaint?.id === c.id;
+                    const isSos = c.category === 'WOMEN_SAFETY_SOS';
+                    const isActionNeeded = c.status === 'RESOLUTION_PROPOSED';
                     const badgeClass = `badge badge-${c.status.toLowerCase()}`;
 
                     return (
@@ -795,28 +883,45 @@ export default function StudentDashboard({ currentUser }) {
                           setSelectedComplaint(c);
                           loadComplaintDetail(c.id);
                         }}
-                        className="card"
+                        className="card card-interactive"
                         style={{
                           padding: '16px',
                           cursor: 'pointer',
-                          borderColor: isSelected ? 'var(--accent-teal)' : 'var(--border-subtle)',
-                          backgroundColor: isSelected ? 'var(--accent-teal-subtle)' : '#ffffff',
+                          borderLeft: isSos ? '4px solid #dc2626' : (isActionNeeded ? '4px solid #f59e0b' : (isSelected ? '4px solid var(--accent-teal)' : '1px solid var(--border-subtle)')),
+                          borderColor: isSelected ? 'var(--accent-teal)' : (isSos ? '#fca5a5' : 'var(--border-subtle)'),
+                          backgroundColor: isSelected ? 'var(--accent-teal-subtle)' : (isSos ? '#fff5f5' : (isActionNeeded ? '#fffdf0' : '#ffffff')),
                           transition: 'all 0.15s ease'
                         }}
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                          <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)' }}>
-                            {c.trackingNumber}
-                          </span>
-                          <span className={badgeClass}>{c.status.replace('_', ' ')}</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            {isSos && <span className="pulse-dot" style={{ backgroundColor: '#dc2626', width: '8px', height: '8px' }}></span>}
+                            <span style={{ fontSize: '0.75rem', fontWeight: '800', color: isSos ? '#dc2626' : 'var(--text-muted)' }}>
+                              {c.trackingNumber}
+                            </span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            {isSos && (
+                              <span className="badge" style={{ backgroundColor: '#dc2626', color: '#ffffff', fontSize: '0.65rem', padding: '2px 6px', fontWeight: '800' }}>
+                                🚨 SOS
+                              </span>
+                            )}
+                            {isActionNeeded && (
+                              <span className="badge" style={{ backgroundColor: '#fef3c7', color: '#b45309', border: '1px solid #fde68a', fontSize: '0.65rem', padding: '2px 6px', fontWeight: '800' }}>
+                                Review Needed
+                              </span>
+                            )}
+                            <span className={badgeClass}>{c.status.replace('_', ' ')}</span>
+                          </div>
                         </div>
 
-                        <div style={{ fontWeight: '700', color: 'var(--primary-navy)', fontSize: '0.9375rem', marginBottom: '4px' }}>
+                        <div style={{ fontWeight: '700', color: isSos ? '#991b1b' : 'var(--primary-navy)', fontSize: '0.9375rem', marginBottom: '4px' }}>
                           {c.title}
                         </div>
 
-                        <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginBottom: '8px' }}>
-                          {c.locationDetail}
+                        <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <span>📍</span>
+                          <span>{c.locationDetail}</span>
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -830,8 +935,8 @@ export default function StudentDashboard({ currentUser }) {
               )}
             </div>
 
-            {/* Detail View Panel Column */}
-            {selectedComplaint && complaintDetail && (
+            {/* Detail View Panel Column or Campus Intelligence & Safety Hub */}
+            {selectedComplaint && complaintDetail ? (
               <div className="card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '18px', minWidth: 0 }}>
                 {/* Header with Title and pinned Close button */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
@@ -1054,6 +1159,299 @@ export default function StudentDashboard({ currentUser }) {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Campus Intelligence & Safety Operations Hub (Fills right column when no ticket is selected) */
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
+                {/* 1. WOMEN'S SAFETY & ANTI-HARASSMENT PRIORITY SOS CARD */}
+                <div
+                  className="card card-interactive"
+                  style={{
+                    padding: '24px',
+                    border: '2px solid #f87171',
+                    background: 'linear-gradient(145deg, #fff5f5 0%, #fee2e2 60%, #fecaca 100%)',
+                    boxShadow: '0 8px 24px rgba(220, 38, 38, 0.12)',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <div style={{
+                    position: 'absolute',
+                    top: '-15px',
+                    right: '-15px',
+                    width: '90px',
+                    height: '90px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(220, 38, 38, 0.08)',
+                    pointerEvents: 'none'
+                  }} />
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span className="pulse-dot" style={{ backgroundColor: '#dc2626', width: '10px', height: '10px' }}></span>
+                      <h3 style={{ fontSize: '1.15rem', fontWeight: '800', color: '#991b1b', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <ShieldAlert size={20} color="#dc2626" />
+                        Women's Safety & Anti-Harassment Priority SOS
+                      </h3>
+                    </div>
+                    <span className="badge" style={{ backgroundColor: '#dc2626', color: '#ffffff', fontWeight: '800', fontSize: '0.7rem', padding: '3px 8px' }}>
+                      DIRECT TO DEAN SW
+                    </span>
+                  </div>
+
+                  <p style={{ fontSize: '0.84rem', color: '#7f1d1d', lineHeight: 1.45, marginBottom: '14px' }}>
+                    For female students or anyone in distress facing harassment, eve-teasing, ragging, or safety concerns anywhere on campus. This alert triggers an <strong>immediate CRITICAL dispatch directly to Prof. Dean Student Welfare (Dean SW) & ICC</strong>, bypassing intermediate hostel or department queues.
+                  </p>
+
+                  {/* Fast Location Preset Chips */}
+                  <div style={{ marginBottom: '10px' }}>
+                    <div style={{ fontSize: '0.72rem', fontWeight: '700', color: '#991b1b', textTransform: 'uppercase', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <MapPin size={12} />
+                      Tap Your Current Campus Location:
+                    </div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {[
+                        'Academic Block A / Library Corridor',
+                        'Sarojini / Gargi Girls Hostel Lawn',
+                        'Central Canteen & Cafeteria Ground',
+                        'Sports Complex & Auditorium Pathway',
+                        'KIET Main Entrance Gate',
+                        'Aryabhatt / Vivekanand Quadrangle'
+                      ].map((loc) => (
+                        <button
+                          key={loc}
+                          type="button"
+                          onClick={() => setSosLocation(loc)}
+                          style={{
+                            padding: '5px 11px',
+                            fontSize: '0.73rem',
+                            borderRadius: 'var(--radius-full)',
+                            border: sosLocation === loc ? '1.5px solid #dc2626' : '1px solid #fca5a5',
+                            backgroundColor: sosLocation === loc ? '#dc2626' : '#ffffff',
+                            color: sosLocation === loc ? '#ffffff' : '#991b1b',
+                            cursor: 'pointer',
+                            fontWeight: sosLocation === loc ? '700' : '600',
+                            transition: 'all 0.12s ease'
+                          }}
+                        >
+                          📍 {loc}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Location Input & SOS Dispatch Button */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div>
+                      <input
+                        type="text"
+                        value={sosLocation}
+                        onChange={(e) => setSosLocation(e.target.value)}
+                        placeholder="Or type exact location (e.g., Near staircase 2nd floor, B-block parking)..."
+                        className="form-input"
+                        style={{
+                          backgroundColor: '#ffffff',
+                          borderColor: '#fca5a5',
+                          fontSize: '0.85rem',
+                          padding: '10px 12px',
+                          color: '#1e293b'
+                        }}
+                      />
+                    </div>
+
+                    <input
+                      type="text"
+                      value={sosDescription}
+                      onChange={(e) => setSosDescription(e.target.value)}
+                      placeholder="Optional brief note (e.g. need security assistance immediately)..."
+                      className="form-input"
+                      style={{
+                        backgroundColor: '#ffffff',
+                        borderColor: '#fca5a5',
+                        fontSize: '0.8125rem',
+                        padding: '8px 12px',
+                        color: '#1e293b'
+                      }}
+                    />
+
+                    {sosError && (
+                      <div style={{ color: '#dc2626', fontSize: '0.75rem', fontWeight: '700' }}>
+                        ⚠️ {sosError}
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      disabled={sosLoading}
+                      onClick={() => handleDispatchSos()}
+                      className="btn card-interactive"
+                      style={{
+                        backgroundColor: '#dc2626',
+                        color: '#ffffff',
+                        border: 'none',
+                        fontWeight: '800',
+                        fontSize: '0.92rem',
+                        padding: '12px 18px',
+                        borderRadius: 'var(--radius-md)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 14px rgba(220, 38, 38, 0.45)',
+                        marginTop: '2px'
+                      }}
+                    >
+                      <span className="pulse-dot" style={{ backgroundColor: '#ffffff', width: '8px', height: '8px' }}></span>
+                      <span>{sosLoading ? '🚨 Dispatching to Dean SW...' : '🚨 DISPATCH EMERGENCY SOS TO DEAN SW'}</span>
+                    </button>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', fontSize: '0.72rem', color: '#991b1b', borderTop: '1px solid #fecaca', paddingTop: '8px' }}>
+                    <span>🛡️ Strict Student Privacy & Confidentiality</span>
+                    <span>1-Hour Immediate Dean SW Response SLA</span>
+                  </div>
+                </div>
+
+                {/* 2. ACTION REQUIRED: RESOLUTION INSPECTION CARD */}
+                {complaints.some(c => c.status === 'RESOLUTION_PROPOSED') && (
+                  (() => {
+                    const pendingTicket = complaints.find(c => c.status === 'RESOLUTION_PROPOSED');
+                    return (
+                      <div
+                        className="card card-interactive"
+                        style={{
+                          padding: '18px 20px',
+                          border: '1.5px solid #f59e0b',
+                          backgroundColor: '#fffbeb',
+                          boxShadow: '0 4px 12px rgba(245, 158, 11, 0.15)'
+                        }}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#92400e', fontWeight: '800', fontSize: '0.92rem' }}>
+                            <span className="pulse-dot" style={{ backgroundColor: '#d97706' }}></span>
+                            <span>Action Required: Repair Awaiting Your Verification</span>
+                          </div>
+                          <span className="badge badge-resolution_proposed" style={{ fontSize: '0.7rem' }}>
+                            {pendingTicket.trackingNumber}
+                          </span>
+                        </div>
+                        <p style={{ fontSize: '0.82rem', color: '#78350f', margin: '0 0 12px' }}>
+                          The facility operator has submitted a completed repair resolution for <strong>"{pendingTicket.title}"</strong>. In accordance with KIET quality standards, you must inspect the repair and either confirm closure or reject it if unsatisfied.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedComplaint(pendingTicket);
+                            loadComplaintDetail(pendingTicket.id);
+                          }}
+                          className="btn btn-warning btn-sm"
+                          style={{ fontWeight: '700', width: '100%' }}
+                        >
+                          Review & Confirm Repair #{pendingTicket.trackingNumber}
+                        </button>
+                      </div>
+                    );
+                  })()
+                )}
+
+                {/* 3. ASSIGNED STUDENT CAMPUS & RESIDENCE DIRECTORY */}
+                <div className="card" style={{ padding: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '10px' }}>
+                    <div style={{ fontSize: '0.9375rem', fontWeight: '800', color: 'var(--primary-navy)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Building size={18} color="var(--kiet-crimson)" />
+                      <span>Campus Authorities & Safety Helplines</span>
+                    </div>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      Assigned: <strong>{currentUser?.hostelCode || 'Hostel'}</strong>
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    {/* Dean SW */}
+                    <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '10px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                      <div style={{ fontSize: '0.7rem', fontWeight: '800', color: 'var(--kiet-crimson)', textTransform: 'uppercase' }}>
+                        Executive Welfare
+                      </div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: '800', color: 'var(--primary-navy)', marginTop: '2px' }}>
+                        Prof. Dean Student Welfare (Dean SW)
+                      </div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        dean.sw@kiet.edu • Main Admin Block
+                      </div>
+                    </div>
+
+                    {/* ICC Committee */}
+                    <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '10px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                      <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#0284c7', textTransform: 'uppercase' }}>
+                        Internal Complaints (ICC)
+                      </div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: '800', color: 'var(--primary-navy)', marginTop: '2px' }}>
+                        Women's Safety Committee
+                      </div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        Confidential Helpline • +91 9811XXXXXX
+                      </div>
+                    </div>
+
+                    {/* Chief Rector */}
+                    <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '10px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                      <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#059669', textTransform: 'uppercase' }}>
+                        Chief Rector Hostels
+                      </div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: '800', color: 'var(--primary-navy)', marginTop: '2px' }}>
+                        All 9 Hostels Directorate
+                      </div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        chiefrector@kiet.edu • Central Hostel Office
+                      </div>
+                    </div>
+
+                    {/* Campus Security */}
+                    <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '10px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                      <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#b91c1c', textTransform: 'uppercase' }}>
+                        Campus Security 24x7
+                      </div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: '800', color: 'var(--primary-navy)', marginTop: '2px' }}>
+                        Central Control Room
+                      </div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                        Ext. 100 • 0120-2657xxx (Main Gate)
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4. GUARANTEED RESOLUTION SLAS & LIFECYCLE */}
+                <div className="card" style={{ padding: '18px 20px', backgroundColor: '#ffffff' }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: '800', color: 'var(--primary-navy)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Clock size={16} color="var(--primary-navy)" />
+                    <span>KIET Deterministic Resolution SLA Framework</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', textAlign: 'center' }}>
+                    <div style={{ backgroundColor: '#fff1f2', padding: '10px 8px', borderRadius: 'var(--radius-md)', border: '1px solid #fecaca' }}>
+                      <div style={{ fontSize: '1rem', fontWeight: '800', color: '#dc2626' }}>1 Hour</div>
+                      <div style={{ fontSize: '0.68rem', fontWeight: '700', color: '#991b1b', textTransform: 'uppercase', marginTop: '2px' }}>
+                        Women's Safety SOS
+                      </div>
+                      <div style={{ fontSize: '0.65rem', color: '#7f1d1d' }}>Dean SW Direct Triage</div>
+                    </div>
+                    <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '10px 8px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                      <div style={{ fontSize: '1rem', fontWeight: '800', color: 'var(--primary-navy)' }}>12h / 24h</div>
+                      <div style={{ fontSize: '0.68rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '2px' }}>
+                        Hostel Maintenance
+                      </div>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Warden & Rector SLA</div>
+                    </div>
+                    <div style={{ backgroundColor: 'var(--bg-subtle)', padding: '10px 8px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                      <div style={{ fontSize: '1rem', fontWeight: '800', color: '#0d9488' }}>100%</div>
+                      <div style={{ fontSize: '0.68rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', marginTop: '2px' }}>
+                        Student Inspection
+                      </div>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Sign-off Required</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1598,6 +1996,272 @@ export default function StudentDashboard({ currentUser }) {
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        )}
+        {/* Women's Safety & Anti-Harassment Priority SOS Modal */}
+        {showSosModal && (
+          <div
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(15, 23, 42, 0.75)',
+              backdropFilter: 'blur(4px)',
+              zIndex: 9999,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '16px'
+            }}
+          >
+            <div
+              className="card"
+              style={{
+                width: '100%',
+                maxWidth: '540px',
+                padding: '0',
+                border: '2px solid #ef4444',
+                boxShadow: '0 25px 50px -12px rgba(220, 38, 38, 0.35)',
+                overflow: 'hidden'
+              }}
+            >
+              {/* Modal Red Emergency Header */}
+              <div style={{
+                background: 'linear-gradient(135deg, #b91c1c 0%, #991b1b 100%)',
+                color: '#ffffff',
+                padding: '18px 22px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <ShieldAlert size={22} color="#ffffff" />
+                  </div>
+                  <div>
+                    <h2 style={{ fontSize: '1.15rem', fontWeight: '800', margin: 0, letterSpacing: '-0.01em' }}>
+                      Women's Safety & Distress SOS
+                    </h2>
+                    <div style={{ fontSize: '0.72rem', color: '#fecaca', fontWeight: '600' }}>
+                      Direct Escalation to Prof. Dean Student Welfare (Dean SW)
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSosModal(false);
+                    setSosSuccessResult(null);
+                    setSosError('');
+                  }}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: 'none',
+                    color: '#ffffff',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div style={{ padding: '22px' }}>
+                {sosSuccessResult ? (
+                  <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                    <div style={{
+                      width: '64px',
+                      height: '64px',
+                      borderRadius: '50%',
+                      backgroundColor: '#dcfce7',
+                      color: '#16a34a',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 16px',
+                      boxShadow: '0 4px 12px rgba(22, 163, 74, 0.2)'
+                    }}>
+                      <CheckCircle2 size={36} />
+                    </div>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--primary-navy)', marginBottom: '6px' }}>
+                      Emergency SOS Dispatched Successfully
+                    </h3>
+                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                      Your distress report has been registered under Tracking Number: <strong style={{ color: '#dc2626' }}>{sosSuccessResult.trackingNumber}</strong> and assigned directly to <strong>Dean Student Welfare (Dean SW)</strong> with CRITICAL urgency.
+                    </p>
+
+                    <div style={{
+                      backgroundColor: '#fff1f2',
+                      border: '1px solid #fecaca',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '14px',
+                      textAlign: 'left',
+                      fontSize: '0.8125rem',
+                      color: '#991b1b',
+                      marginBottom: '20px'
+                    }}>
+                      <div style={{ fontWeight: '800', marginBottom: '4px' }}>🚨 Direct Emergency Helplines:</div>
+                      <div>• Dean SW Office: <strong>dean.sw@kiet.edu</strong></div>
+                      <div>• Women's Internal Complaints Committee (ICC): <strong>+91 9811XXXXXX</strong></div>
+                      <div>• Campus Security Control: <strong>Ext 100 / 0120-2657xxx</strong></div>
+                      <div>• Campus Ambulance / Medical Room: <strong>Ext 108</strong></div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowSosModal(false);
+                        setSosSuccessResult(null);
+                        setActiveTab('my-complaints');
+                      }}
+                      className="btn btn-primary"
+                      style={{ width: '100%', padding: '12px', fontWeight: '700' }}
+                    >
+                      View Ticket in My Complaints
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    {/* Student Identity Pill */}
+                    <div style={{
+                      backgroundColor: 'var(--bg-subtle)',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: 'var(--radius-md)',
+                      padding: '10px 14px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '16px',
+                      fontSize: '0.8125rem'
+                    }}>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)' }}>Student Reporter: </span>
+                        <strong style={{ color: 'var(--primary-navy)' }}>{currentUser?.fullName}</strong>
+                      </div>
+                      <span className="badge badge-submitted" style={{ fontSize: '0.7rem' }}>
+                        {currentUser?.hostelCode || 'Campus'} {currentUser?.roomNumber ? `• Rm ${currentUser.roomNumber}` : ''}
+                      </span>
+                    </div>
+
+                    <div style={{ marginBottom: '14px' }}>
+                      <label className="form-label" style={{ fontWeight: '800', color: '#991b1b', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <MapPin size={14} />
+                        1. Current Location on Campus *
+                      </label>
+
+                      {/* Fast chips */}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '8px' }}>
+                        {[
+                          'Academic Block A / Library Corridor',
+                          'Sarojini / Gargi Girls Lawn',
+                          'Central Canteen & Cafeteria Ground',
+                          'Sports Complex & Pathway',
+                          'KIET Main Entrance Gate'
+                        ].map((chip) => (
+                          <button
+                            key={chip}
+                            type="button"
+                            onClick={() => setSosLocation(chip)}
+                            style={{
+                              padding: '4px 9px',
+                              fontSize: '0.72rem',
+                              borderRadius: 'var(--radius-full)',
+                              border: sosLocation === chip ? '1.5px solid #dc2626' : '1px solid #cbd5e1',
+                              backgroundColor: sosLocation === chip ? '#dc2626' : '#ffffff',
+                              color: sosLocation === chip ? '#ffffff' : 'var(--primary-navy)',
+                              cursor: 'pointer',
+                              fontWeight: sosLocation === chip ? '700' : '500'
+                            }}
+                          >
+                            📍 {chip}
+                          </button>
+                        ))}
+                      </div>
+
+                      <input
+                        type="text"
+                        className="form-input"
+                        placeholder="Type location (e.g. Near Auditorium stairs, Block B 2nd floor)..."
+                        value={sosLocation}
+                        onChange={(e) => setSosLocation(e.target.value)}
+                        style={{ borderColor: '#fca5a5' }}
+                        autoFocus
+                      />
+                    </div>
+
+                    <div style={{ marginBottom: '18px' }}>
+                      <label className="form-label" style={{ color: 'var(--text-secondary)' }}>
+                        2. Situation Details / Urgency Note (Optional)
+                      </label>
+                      <textarea
+                        className="form-textarea"
+                        rows={2}
+                        placeholder="Provide any helpful detail (e.g. eve teasing, stalking, need security officer immediately)..."
+                        value={sosDescription}
+                        onChange={(e) => setSosDescription(e.target.value)}
+                      />
+                    </div>
+
+                    {sosError && (
+                      <div style={{
+                        backgroundColor: '#fee2e2',
+                        color: '#dc2626',
+                        padding: '10px 12px',
+                        borderRadius: 'var(--radius-md)',
+                        fontSize: '0.8125rem',
+                        marginBottom: '14px',
+                        fontWeight: '700'
+                      }}>
+                        ⚠️ {sosError}
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      disabled={sosLoading}
+                      onClick={() => handleDispatchSos()}
+                      className="btn card-interactive"
+                      style={{
+                        width: '100%',
+                        backgroundColor: '#dc2626',
+                        color: '#ffffff',
+                        border: 'none',
+                        fontWeight: '800',
+                        fontSize: '0.95rem',
+                        padding: '14px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        boxShadow: '0 4px 16px rgba(220, 38, 38, 0.45)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <span className="pulse-dot" style={{ backgroundColor: '#ffffff', width: '8px', height: '8px' }}></span>
+                      <span>{sosLoading ? '🚨 Dispatching Report to Dean SW...' : '🚨 SEND IMMEDIATE SOS TO DEAN SW'}</span>
+                    </button>
+
+                    <div style={{ textAlign: 'center', marginTop: '12px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      🔒 Confidential report routed directly to Dean SW. Protected under Supreme Court & UGC Guidelines.
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

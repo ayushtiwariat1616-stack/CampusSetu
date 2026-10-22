@@ -174,6 +174,9 @@ public class DataInitializer implements CommandLineRunner {
                 new ComplaintQueue("QUEUE_SERVICE_MESS", "Campus Mess Council Queue", "SERVICE", "MESS_FOOD", "QUEUE_CENTRAL_ADMIN", 12, 24),
                 new ComplaintQueue("QUEUE_SERVICE_TRANSPORT", "Campus Transport Services", "SERVICE", "TRANSPORT", "QUEUE_CENTRAL_ADMIN", 24, 48),
 
+                // Executive Women's Safety & Anti-Harassment Priority Queue: Directly to Dean SW
+                new ComplaintQueue("QUEUE_DEAN_STUDENT_WELFARE", "Dean Student Welfare (Dean SW) Emergency Desk", "DEAN_SW", "CAMPUS_WIDE", "QUEUE_CENTRAL_ADMIN", 1, 12),
+
                 // Central Administrator Final Escalation Target
                 new ComplaintQueue("QUEUE_CENTRAL_ADMIN", "Director General & Central Grievance Cell", "CENTRAL_ADMIN", "CAMPUS_WIDE", null, 24, 48)
         );
@@ -184,6 +187,7 @@ public class DataInitializer implements CommandLineRunner {
                 new RosterEntry("ayush.25004108@kiet.edu", "Ayush Sharma", "STUDENT", "AIML", "ARYABHATT", "214", "25004108", null),
                 new RosterEntry("srijan.25002324@kiet.edu", "Srijan Shrivastava", "STUDENT", "CSE", "ARYABHATT", "105", "25002324", null),
                 new RosterEntry("ananya.25001142@kiet.edu", "Ananya Singh", "STUDENT", "IT", "SAROJINI", "204", "25001142", null),
+                new RosterEntry("dean.sw@kiet.edu", "Prof. Dean Student Welfare (Dean SW)", "DEAN_SW", null, null, null, null, "CAMPUS_WIDE"),
                 new RosterEntry("warden.aryabhatt@kiet.edu", "Hostel Warden Aryabhatt", "HOSTEL_WARDEN", null, "ARYABHATT", null, null, null),
                 new RosterEntry("warden.tagore@kiet.edu", "Hostel Warden Tagore", "HOSTEL_WARDEN", null, "TAGORE", null, null, null),
                 new RosterEntry("warden.sarojini@kiet.edu", "Hostel Warden Sarojini", "HOSTEL_WARDEN", null, "SAROJINI", null, null, null),
@@ -263,6 +267,13 @@ public class DataInitializer implements CommandLineRunner {
         chiefRector = userRepository.save(chiefRector);
         assignmentRepository.save(new OperatorAssignment(chiefRector, "CHIEF_RECTOR", "HOSTEL", "ALL_HOSTELS"));
         seedOperatorKey(chiefRector, "OPK-CHIEF-RECT-2026");
+
+        // Dean Student Welfare (Dean SW) - Executive Women's Safety & Student Affairs
+        User deanSw = new User("dean.sw@kiet.edu", "sub-google-deansw", "Prof. Dean Student Welfare (Dean SW)", UserRole.OPERATOR, OnboardingStatus.APPROVED);
+        deanSw.setPasswordHash(defaultPasswordHash);
+        deanSw = userRepository.save(deanSw);
+        assignmentRepository.save(new OperatorAssignment(deanSw, "DEAN_SW", "CAMPUS_WIDE", "CAMPUS_WIDE"));
+        seedOperatorKey(deanSw, "OPK-DEAN-SW-2026");
 
         // AIML Dept Operator
         User aimlOp = new User("aiml.operator@kiet.edu", "sub-google-aimlop", "AIML Department Officer", UserRole.OPERATOR, OnboardingStatus.APPROVED);

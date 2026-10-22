@@ -38,6 +38,21 @@ public class RoutingService {
                                         String specificHostelCode,
                                         String specificDepartmentCode) {
 
+        // Emergency Priority Override: Women's Safety & Harassment SOS -> Directly to Dean SW
+        if (category == ComplaintCategory.WOMEN_SAFETY_SOS) {
+            Optional<ComplaintQueue> queue = queueRepository.findByQueueCode("QUEUE_DEAN_STUDENT_WELFARE");
+            if (queue.isPresent() && queue.get().isActive()) {
+                return new RoutingDecision(
+                        queue.get().getQueueCode(),
+                        queue.get().getQueueName(),
+                        "Dean of Student Welfare (Dean SW) & Internal Complaints Committee",
+                        "WOMEN_SAFETY_SOS_DIRECT_DISPATCH",
+                        true,
+                        null
+                );
+            }
+        }
+
         if (locationType == null) {
             return RoutingDecision.unroutable("Location type must be specified.");
         }

@@ -215,6 +215,7 @@ public class AuthController {
             case "WARDEN_SAROJINI" -> email = "warden.sarojini@kiet.edu";
             case "RECTOR_ARYABHATT" -> email = "rector.aryabhatt@kiet.edu";
             case "CHIEF_RECTOR" -> email = "chiefrector@kiet.edu";
+            case "DEAN_SW" -> email = "dean.sw@kiet.edu";
             case "OPERATOR_AIML" -> email = "aiml.operator@kiet.edu";
             case "OPERATOR_IT" -> email = "it.service@kiet.edu";
             case "SYSTEM_ADMIN" -> email = "admin.campussetu@kiet.edu";

@@ -785,6 +785,32 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                 </div>
               </button>
 
+              {/* Dean Student Welfare (Dean SW & ICC) */}
+              <button
+                type="button"
+                onClick={() => fillCredentials('dean.sw@kiet.edu', 'CampusSetu@2026', 'OPK-DEAN-SW-2026')}
+                className="btn btn-outline"
+                style={{
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  padding: '9px 12px',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.78rem',
+                  border: '1px solid #fecaca',
+                  backgroundColor: '#fff1f2'
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: '800', color: '#b91c1c' }}>🚨 Dean SW (Anti-Harassment Desk)</span>
+                    <span className="badge" style={{ backgroundColor: '#dc2626', color: '#ffffff', fontSize: '0.65rem', padding: '1px 6px' }}>Executive</span>
+                  </div>
+                  <span style={{ color: '#991b1b', fontSize: '0.72rem' }}>
+                    Dean Student Welfare & ICC • Key: OPK-DEAN-SW-2026
+                  </span>
+                </div>
+              </button>
+
               {/* System Admin */}
               <button
                 type="button"
