@@ -173,10 +173,10 @@ export const api = {
   },
   searchAcademicPages: (q) =>
     request(`/api/academics/search?q=${encodeURIComponent(q)}`),
-  askAcademicQuestion: (question) =>
+  askAcademicQuestion: (question, groqApiKey = null, documentId = null, model = null) =>
     request('/api/academics/ask', {
       method: 'POST',
-      body: JSON.stringify({ question }),
+      body: JSON.stringify({ question, groqApiKey, documentId, model }),
     }),
   uploadAcademicDocument: (formData) =>
     request('/api/academics/documents', {
@@ -185,7 +185,9 @@ export const api = {
       isFormData: true,
     }),
   deleteAcademicDocument: (id) =>
-    request(`/api/academics/documents/${id}`, { method: 'DELETE' }),
+    request(`/api/academics/documents/${id}`, {
+      method: 'DELETE',
+    }),
 
   // Admin
   previewRoster: (formData) =>

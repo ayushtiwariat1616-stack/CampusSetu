@@ -559,10 +559,12 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                     value={regHostel}
                     onChange={(e) => setRegHostel(e.target.value)}
                   >
-                    <option value="ARYABHATT">Aryabhatt Hostel</option>
-                    <option value="CV_RAMAN">C.V. Raman Hostel</option>
-                    <option value="TAGORE">Tagore Hostel</option>
+                    <option value="ARYABHATT">Aryabhatt Hostel (First Year Boys)</option>
+                    <option value="TAGORE">Tagore Hostel (Boys)</option>
+                    <option value="CV_RAMAN">C.V. Raman Hostel (Senior Boys)</option>
+                    <option value="SAROJINI">Sarojini Hostel (Girls)</option>
                     <option value="SARASWATI">Saraswati Hostel (Girls)</option>
+                    <option value="GARGI">Gargi Hostel (Girls)</option>
                     <option value="DAY_SCHOLAR">Day Scholar (Transit)</option>
                   </select>
                 </div>
@@ -574,7 +576,7 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                   <input
                     type="text"
                     className="form-input"
-                    placeholder="e.g. 214"
+                    placeholder="e.g. 105 or 204"
                     value={regRoom}
                     onChange={(e) => setRegRoom(e.target.value)}
                   />
@@ -584,7 +586,7 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                   <input
                     type="text"
                     className="form-input"
-                    placeholder="e.g. 25004108"
+                    placeholder="e.g. 25002324"
                     value={regRoll}
                     onChange={(e) => setRegRoll(e.target.value)}
                   />
@@ -618,10 +620,24 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
               <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                 <button
                   type="button"
+                  onClick={() => { setTab('password'); fillCredentials('srijan.25002324@kiet.edu'); }}
+                  style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer', fontWeight: '700', color: '#0b2545' }}
+                >
+                  Srijan Shrivastava (Aryabhatt 105)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setTab('password'); fillCredentials('ananya.25001142@kiet.edu'); }}
+                  style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer', fontWeight: '700', color: '#0b2545' }}
+                >
+                  Ananya Singh (Sarojini 204)
+                </button>
+                <button
+                  type="button"
                   onClick={() => { setTab('password'); fillCredentials('ayush.25004108@kiet.edu'); }}
                   style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}
                 >
-                  Ayush (Student • Aryabhatt)
+                  Ayush Sharma (Aryabhatt 214)
                 </button>
                 <button
                   type="button"
@@ -632,17 +648,17 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setTab('operator'); fillCredentials('rector.aryabhatt@kiet.edu', 'CampusSetu@2026', 'OPK-ARYA-RECT-2026'); }}
+                  onClick={() => { setTab('operator'); fillCredentials('warden.tagore@kiet.edu', 'CampusSetu@2026', 'OPK-TAGO-WARD-2026'); }}
                   style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}
                 >
-                  Rector Aryabhatt
+                  Warden Tagore
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setTab('operator'); fillCredentials('aiml.operator@kiet.edu', 'CampusSetu@2026', 'OPK-AIML-DEPT-2026'); }}
+                  onClick={() => { setTab('operator'); fillCredentials('warden.sarojini@kiet.edu', 'CampusSetu@2026', 'OPK-SARO-WARD-2026'); }}
                   style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}
                 >
-                  AIML Dept Officer
+                  Warden Sarojini
                 </button>
                 <button
                   type="button"

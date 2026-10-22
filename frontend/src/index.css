@@ -1,19 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --primary-navy: #0f2942;
-  --primary-dark: #091827;
-  --accent-teal: #0d9488;
-  --accent-teal-light: #14b8a6;
+  /* KIET Group of Institutions / University Official Brand Palette */
+  --primary-navy: #0b2545;
+  --primary-navy-dark: #07192f;
+  --primary-dark: #07192f;
+  
+  --kiet-maroon: #800020;
+  --kiet-crimson: #9b1c2e;
+  
+  --kiet-gold: #f8b81f;
+  --kiet-gold-dark: #d99a0d;
+  --kiet-gold-subtle: #fffdf0;
+
+  --accent-teal: #1ab69d;
+  --accent-teal-light: #20c997;
   --accent-teal-subtle: #f0fdfa;
-  --accent-blue: #2563eb;
+  --accent-blue: #0d6efd;
   --accent-blue-subtle: #eff6ff;
 
   --bg-main: #f8fafc;
   --bg-card: #ffffff;
   --bg-subtle: #f1f5f9;
   --border-subtle: #e2e8f0;
-  --border-focus: #0d9488;
+  --border-focus: #1ab69d;
 
   --text-primary: #0f172a;
   --text-secondary: #475569;
@@ -22,13 +32,13 @@
 
   --status-submitted: #d97706;
   --status-submitted-bg: #fef3c7;
-  --status-ack: #2563eb;
+  --status-ack: #0d6efd;
   --status-ack-bg: #dbeafe;
   --status-progress: #7c3aed;
   --status-progress-bg: #ede9fe;
   --status-proposed: #0891b2;
   --status-proposed-bg: #cffafe;
-  --status-closed: #059669;
+  --status-closed: #1ab69d;
   --status-closed-bg: #d1fae5;
   --status-reopened: #dc2626;
   --status-reopened-bg: #fee2e2;
@@ -38,10 +48,10 @@
   --radius-lg: 16px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
-  --shadow-card: 0 20px 25px -5px rgb(15 23 42 / 0.05), 0 8px 10px -6px rgb(15 23 42 / 0.02);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06);
+  --shadow-md: 0 4px 6px -1px rgb(11 37 69 / 0.08), 0 2px 4px -2px rgb(11 37 69 / 0.04);
+  --shadow-lg: 0 10px 15px -3px rgb(11 37 69 / 0.1), 0 4px 6px -4px rgb(11 37 69 / 0.05);
+  --shadow-card: 0 12px 24px -4px rgb(11 37 69 / 0.07);
 }
 
 * {
@@ -105,7 +115,7 @@ a {
   padding: 4px 10px;
   border-radius: var(--radius-full);
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -165,7 +175,7 @@ a {
   color: #ffffff;
 }
 .btn-primary:hover {
-  background-color: #0f766e;
+  background-color: #159882;
 }
 
 .btn-navy {
@@ -173,7 +183,24 @@ a {
   color: #ffffff;
 }
 .btn-navy:hover {
-  background-color: var(--primary-dark);
+  background-color: var(--primary-navy-dark);
+}
+
+.btn-maroon {
+  background-color: var(--kiet-crimson);
+  color: #ffffff;
+}
+.btn-maroon:hover {
+  background-color: #800020;
+}
+
+.btn-gold {
+  background-color: var(--kiet-gold);
+  color: var(--primary-navy);
+  font-weight: 700;
+}
+.btn-gold:hover {
+  background-color: var(--kiet-gold-dark);
 }
 
 .btn-outline {
@@ -232,7 +259,7 @@ a {
 .form-input:focus, .form-select:focus, .form-textarea:focus {
   outline: none;
   border-color: var(--accent-teal);
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+  box-shadow: 0 0 0 3px rgba(26, 182, 157, 0.18);
 }
 
 /* Cards */
@@ -242,13 +269,28 @@ a {
   border-radius: var(--radius-lg);
   padding: 24px;
   box-shadow: var(--shadow-sm);
+  min-width: 0;
+  word-break: break-word;
 }
 
-/* Responsive grid layouts */
+/* Container */
 .container {
   max-width: 1240px;
   margin: 0 auto;
   padding: 0 20px;
+}
+
+/* Layout helpers for responsive grids and cards */
+.grid-complaints {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .grid-complaints {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 @media (max-width: 768px) {

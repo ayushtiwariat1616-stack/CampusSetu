@@ -93,7 +93,7 @@ public class AcademicController {
     }
 
     /**
-     * Grounded academic document Q&A assistant with page citations.
+     * Grounded academic document Q&A assistant with Groq Llama 3 & page citations.
      */
     @PostMapping("/ask")
     public ResponseEntity<ApiResponse<AcademicService.AcademicQAResponse>> askQuestion(
@@ -101,7 +101,8 @@ public class AcademicController {
             HttpServletRequest request) {
 
         SessionUser user = authHelper.requireApprovedUser(request);
-        AcademicService.AcademicQAResponse answer = academicService.askQuestion(req.question(), user);
+        AcademicService.AcademicQAResponse answer = academicService.askQuestion(
+                req.question(), req.groqApiKey(), req.documentId(), req.model(), user);
         return ResponseEntity.ok(ApiResponse.ok(answer));
     }
 
@@ -130,5 +131,14 @@ public class AcademicController {
                 .body(resource);
     }
 
-    public record AskQuestionRequest(String question) {}
+    public record AskQuestionRequest(
+            String question,
+            String groqApiKey,
+            Long documentId,
+            String model
+    ) {
+        public AskQuestionRequest(String question) {
+            this(question, null, null, null);
+        }
+    }
 }

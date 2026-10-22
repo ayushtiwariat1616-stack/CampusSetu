@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
-import DemoBanner from './components/DemoBanner';
 import LandingPage from './components/LandingPage';
 import HowItWorksPage from './components/HowItWorksPage';
 import FAQPage from './components/FAQPage';
@@ -122,9 +121,6 @@ export default function App() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Dev Mode Banner with Quick Persona Switcher */}
-      <DemoBanner currentUser={currentUser} onSwitchUser={handleSwitchDemoUser} />
-
       {/* Main Navbar */}
       <Navbar
         currentUser={currentUser}

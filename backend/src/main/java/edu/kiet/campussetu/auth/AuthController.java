@@ -211,12 +211,16 @@ public class AuthController {
         String email;
         switch (accountType) {
             case "WARDEN_ARYABHATT" -> email = "warden.aryabhatt@kiet.edu";
+            case "WARDEN_TAGORE" -> email = "warden.tagore@kiet.edu";
+            case "WARDEN_SAROJINI" -> email = "warden.sarojini@kiet.edu";
             case "RECTOR_ARYABHATT" -> email = "rector.aryabhatt@kiet.edu";
             case "CHIEF_RECTOR" -> email = "chiefrector@kiet.edu";
             case "OPERATOR_AIML" -> email = "aiml.operator@kiet.edu";
             case "OPERATOR_IT" -> email = "it.service@kiet.edu";
             case "SYSTEM_ADMIN" -> email = "admin.campussetu@kiet.edu";
             case "PENDING_STUDENT" -> email = "unverified.student@kiet.edu";
+            case "STUDENT_SRIJAN" -> email = "srijan.25002324@kiet.edu";
+            case "STUDENT_ANANYA" -> email = "ananya.25001142@kiet.edu";
             case "STUDENT_ARYABHATT" -> email = "ayush.25004108@kiet.edu";
             default -> email = "ayush.25004108@kiet.edu";
         }

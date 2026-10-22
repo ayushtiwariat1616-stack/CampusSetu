@@ -106,7 +106,8 @@ public class DataInitializer implements CommandLineRunner {
                 new Hostel("CV_RAMAN", "C.V. Raman Hostel (Senior Boys)", "BOYS", "QUEUE_HOSTEL_CV_RAMAN_RECTOR"),
                 new Hostel("TAGORE", "Tagore Hostel (Boys)", "BOYS", "QUEUE_HOSTEL_TAGORE_RECTOR"),
                 new Hostel("SARASWATI", "Saraswati Hostel (Girls)", "GIRLS", "QUEUE_HOSTEL_SARASWATI_RECTOR"),
-                new Hostel("GARGI", "Gargi Hostel (Girls)", "GIRLS", "QUEUE_HOSTEL_GARGI_RECTOR")
+                new Hostel("GARGI", "Gargi Hostel (Girls)", "GIRLS", "QUEUE_HOSTEL_GARGI_RECTOR"),
+                new Hostel("SAROJINI", "Sarojini Hostel (Girls)", "GIRLS", "QUEUE_HOSTEL_SAROJINI_RECTOR")
         );
         hostelRepository.saveAll(hostels);
 
@@ -121,11 +122,15 @@ public class DataInitializer implements CommandLineRunner {
 
         // 4. Complaint Queues & Escalation Hierarchies
         List<ComplaintQueue> queues = List.of(
-                // Scenario A Hierarchy: Aryabhatt Hostel Warden -> Rector -> Chief Rector -> Central Admin
+                // Hostels Escalation Hierarchy: Hostel Warden -> Rector -> Chief Rector -> Central Admin
                 new ComplaintQueue("QUEUE_HOSTEL_ARYABHATT_WARDEN", "Aryabhatt Hostel Warden Queue", "HOSTEL_WARDEN", "ARYABHATT", "QUEUE_HOSTEL_ARYABHATT_RECTOR", 12, 48),
                 new ComplaintQueue("QUEUE_HOSTEL_ARYABHATT_RECTOR", "Aryabhatt Hostel Rector Queue", "RECTOR", "ARYABHATT", "QUEUE_CHIEF_RECTOR", 24, 72),
                 new ComplaintQueue("QUEUE_HOSTEL_CV_RAMAN_WARDEN", "C.V. Raman Hostel Warden Queue", "HOSTEL_WARDEN", "CV_RAMAN", "QUEUE_HOSTEL_CV_RAMAN_RECTOR", 12, 48),
                 new ComplaintQueue("QUEUE_HOSTEL_CV_RAMAN_RECTOR", "C.V. Raman Hostel Rector Queue", "RECTOR", "CV_RAMAN", "QUEUE_CHIEF_RECTOR", 24, 72),
+                new ComplaintQueue("QUEUE_HOSTEL_TAGORE_WARDEN", "Tagore Hostel Warden Queue", "HOSTEL_WARDEN", "TAGORE", "QUEUE_HOSTEL_TAGORE_RECTOR", 12, 48),
+                new ComplaintQueue("QUEUE_HOSTEL_TAGORE_RECTOR", "Tagore Hostel Rector Queue", "RECTOR", "TAGORE", "QUEUE_CHIEF_RECTOR", 24, 72),
+                new ComplaintQueue("QUEUE_HOSTEL_SAROJINI_WARDEN", "Sarojini Hostel Warden Queue", "HOSTEL_WARDEN", "SAROJINI", "QUEUE_HOSTEL_SAROJINI_RECTOR", 12, 48),
+                new ComplaintQueue("QUEUE_HOSTEL_SAROJINI_RECTOR", "Sarojini Hostel Rector Queue", "RECTOR", "SAROJINI", "QUEUE_CHIEF_RECTOR", 24, 72),
                 new ComplaintQueue("QUEUE_CHIEF_RECTOR", "Chief Rector Office Queue", "CHIEF_RECTOR", "ALL_HOSTELS", "QUEUE_CENTRAL_ADMIN", 24, 48),
 
                 // Scenario B Hierarchy: AIML Department Operator -> Central Admin
@@ -152,7 +157,11 @@ public class DataInitializer implements CommandLineRunner {
         // 5. Pre-Approved Roster Entries
         List<RosterEntry> rosterList = List.of(
                 new RosterEntry("ayush.25004108@kiet.edu", "Ayush Sharma", "STUDENT", "AIML", "ARYABHATT", "214", "25004108", null),
+                new RosterEntry("srijan.25002324@kiet.edu", "Srijan Shrivastava", "STUDENT", "CSE", "ARYABHATT", "105", "25002324", null),
+                new RosterEntry("ananya.25001142@kiet.edu", "Ananya Singh", "STUDENT", "IT", "SAROJINI", "204", "25001142", null),
                 new RosterEntry("warden.aryabhatt@kiet.edu", "Hostel Warden Aryabhatt", "HOSTEL_WARDEN", null, "ARYABHATT", null, null, null),
+                new RosterEntry("warden.tagore@kiet.edu", "Hostel Warden Tagore", "HOSTEL_WARDEN", null, "TAGORE", null, null, null),
+                new RosterEntry("warden.sarojini@kiet.edu", "Hostel Warden Sarojini", "HOSTEL_WARDEN", null, "SAROJINI", null, null, null),
                 new RosterEntry("rector.aryabhatt@kiet.edu", "Rector Aryabhatt Hostel", "RECTOR", null, "ARYABHATT", null, null, null),
                 new RosterEntry("chiefrector@kiet.edu", "Chief Rector Hostels", "CHIEF_RECTOR", null, null, null, null, "ALL_HOSTELS"),
                 new RosterEntry("aiml.operator@kiet.edu", "AIML Lab & Facility Incharge", "DEPARTMENT_OPERATOR", "AIML", null, null, null, null),
@@ -164,7 +173,7 @@ public class DataInitializer implements CommandLineRunner {
         // 6. Seed Users with Scopes & Individual Operator Keys
         String defaultPasswordHash = passwordEncoder.encode("CampusSetu@2026");
 
-        // Student
+        // Student 1: Ayush Sharma
         User student = new User("ayush.25004108@kiet.edu", "sub-google-ayush", "Ayush Sharma", UserRole.STUDENT, OnboardingStatus.APPROVED);
         student.setDepartmentCode("AIML");
         student.setHostelCode("ARYABHATT");
@@ -173,6 +182,24 @@ public class DataInitializer implements CommandLineRunner {
         student.setPasswordHash(defaultPasswordHash);
         student = userRepository.save(student);
 
+        // Student 2: Srijan Shrivastava (Boy in Aryabhatt Room 105)
+        User srijan = new User("srijan.25002324@kiet.edu", "sub-google-srijan", "Srijan Shrivastava", UserRole.STUDENT, OnboardingStatus.APPROVED);
+        srijan.setDepartmentCode("CSE");
+        srijan.setHostelCode("ARYABHATT");
+        srijan.setRoomNumber("105");
+        srijan.setStudentRollNumber("25002324");
+        srijan.setPasswordHash(defaultPasswordHash);
+        userRepository.save(srijan);
+
+        // Student 3: Ananya Singh (Girl in Sarojini Room 204)
+        User ananya = new User("ananya.25001142@kiet.edu", "sub-google-ananya", "Ananya Singh", UserRole.STUDENT, OnboardingStatus.APPROVED);
+        ananya.setDepartmentCode("IT");
+        ananya.setHostelCode("SAROJINI");
+        ananya.setRoomNumber("204");
+        ananya.setStudentRollNumber("25001142");
+        ananya.setPasswordHash(defaultPasswordHash);
+        userRepository.save(ananya);
+
         // Warden Aryabhatt
         User warden = new User("warden.aryabhatt@kiet.edu", "sub-google-warden", "Hostel Warden Aryabhatt", UserRole.OPERATOR, OnboardingStatus.APPROVED);
         warden.setHostelCode("ARYABHATT");
@@ -180,6 +207,22 @@ public class DataInitializer implements CommandLineRunner {
         warden = userRepository.save(warden);
         assignmentRepository.save(new OperatorAssignment(warden, "HOSTEL_WARDEN", "HOSTEL", "ARYABHATT"));
         seedOperatorKey(warden, "OPK-ARYA-WARD-2026");
+
+        // Warden Tagore (Boys)
+        User wardenTagore = new User("warden.tagore@kiet.edu", "sub-google-warden-tagore", "Hostel Warden Tagore", UserRole.OPERATOR, OnboardingStatus.APPROVED);
+        wardenTagore.setHostelCode("TAGORE");
+        wardenTagore.setPasswordHash(defaultPasswordHash);
+        wardenTagore = userRepository.save(wardenTagore);
+        assignmentRepository.save(new OperatorAssignment(wardenTagore, "HOSTEL_WARDEN", "HOSTEL", "TAGORE"));
+        seedOperatorKey(wardenTagore, "OPK-TAGO-WARD-2026");
+
+        // Warden Sarojini (Girls)
+        User wardenSarojini = new User("warden.sarojini@kiet.edu", "sub-google-warden-sarojini", "Hostel Warden Sarojini", UserRole.OPERATOR, OnboardingStatus.APPROVED);
+        wardenSarojini.setHostelCode("SAROJINI");
+        wardenSarojini.setPasswordHash(defaultPasswordHash);
+        wardenSarojini = userRepository.save(wardenSarojini);
+        assignmentRepository.save(new OperatorAssignment(wardenSarojini, "HOSTEL_WARDEN", "HOSTEL", "SAROJINI"));
+        seedOperatorKey(wardenSarojini, "OPK-SARO-WARD-2026");
 
         // Rector Aryabhatt
         User rector = new User("rector.aryabhatt@kiet.edu", "sub-google-rector", "Prof. Rector Aryabhatt", UserRole.OPERATOR, OnboardingStatus.APPROVED);
@@ -346,7 +389,44 @@ public class DataInitializer implements CommandLineRunner {
                 "Mid-term practical exam accounts for 20 marks. End-term University Practical Examination accounts for 50 marks. Total lab credit marks: 100."
         ));
 
-        log.info("Data initialization complete. Seeded 8 departments, 5 hostels, 15 complaint queues, 7 demo accounts, 3 complaints, 1 incident, and 1 academic course guide.");
+        // 10. Semester 2 Official Core Guide (Engineering Maths & Problem Solving Data Structures)
+        AcademicDocument docSem2 = new AcademicDocument();
+        docSem2.setTitle("BAS-203 / BCS-201: Engineering Mathematics-II & Data Structures Core Guide");
+        docSem2.setSubjectCode("BAS-203");
+        docSem2.setSubjectName("Engineering Mathematics-II & Data Structures");
+        docSem2.setDepartmentCode("COMMON");
+        docSem2.setSemester(2);
+        docSem2.setOriginalFileName("KIET_Semester_2_Core_Curriculum.pdf");
+        docSem2.setStoragePath("./storage/academics/demo_sem2_core.pdf");
+        docSem2.setFileSizeBytes(184320);
+        docSem2.setUploadedBy(admin);
+        docSem2.setPageCount(3);
+        docSem2.setExtracted(true);
+        docSem2 = academicDocumentRepository.save(docSem2);
+
+        academicDocumentPageRepository.save(new AcademicDocumentPage(
+                docSem2.getId(), 1,
+                "KIET Group of Institutions, Ghaziabad. First Year B.Tech Core Curriculum. Course: BAS-203 Engineering Mathematics-II. " +
+                "Unit 1: Ordinary Differential Equations of Higher Order. Linear differential equations of second and higher order with constant coefficients. " +
+                "Method of variation of parameters, Cauchy-Euler equations, and simultaneous linear differential equations with applications to harmonic oscillators."
+        ));
+
+        academicDocumentPageRepository.save(new AcademicDocumentPage(
+                docSem2.getId(), 2,
+                "Course: BCS-201 Programming for Problem Solving & Data Structures. " +
+                "Linear Data Structures: Arrays, singly linked lists, doubly linked lists, circular linked lists. " +
+                "Stack operations: Push, Pop, Peek with O(1) time complexity. Applications in infix-to-postfix expression conversion and recursion stack tracing. " +
+                "Queue operations: Enqueue, Dequeue using circular array to prevent memory drift."
+        ));
+
+        academicDocumentPageRepository.save(new AcademicDocumentPage(
+                docSem2.getId(), 3,
+                "Course: BCS-201 Unit 3: Non-Linear Data Structures. Binary Trees, Binary Search Trees (BST), and Tree Traversals (Inorder, Preorder, Postorder). " +
+                "BST property: For any node n, keys in left subtree are smaller than key(n), and keys in right subtree are greater than key(n). " +
+                "Search time complexity: Average O(log n), worst case O(n) in degenerate skewed trees. AVL Tree height balance property ensures O(log n) worst case."
+        ));
+
+        log.info("Data initialization complete. Seeded 8 departments, 6 hostels, 19 complaint queues, 11 demo accounts, 3 complaints, 1 incident, and 2 academic course guides.");
     }
 
     private void seedOperatorKey(User user, String plaintextKey) {
