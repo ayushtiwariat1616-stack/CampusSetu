@@ -61,9 +61,9 @@ export default function LandingPage({ onSelectTab }) {
         position: 'relative',
         borderBottom: '1px solid var(--border-subtle)',
         padding: '64px 0 54px',
-        backgroundImage: 'linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.96) 42%, rgba(255, 255, 255, 0.78) 65%, rgba(255, 255, 255, 0.28) 100%), url("/kiet_campus.jpg")',
+        backgroundImage: 'linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.97) 35%, rgba(255, 255, 255, 0.72) 58%, rgba(255, 255, 255, 0.12) 100%), url("/kiet_campus.png")',
         backgroundSize: 'cover',
-        backgroundPosition: 'center right',
+        backgroundPosition: 'right center',
         backgroundRepeat: 'no-repeat',
         overflow: 'hidden'
       }}>

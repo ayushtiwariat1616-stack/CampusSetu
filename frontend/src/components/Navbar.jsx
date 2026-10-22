@@ -129,13 +129,6 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }
               How It Works
             </button>
             <button
-              onClick={() => onSelectTab('shared-incidents')}
-              className={`btn btn-sm ${activeTab === 'shared-incidents' ? 'btn-navy' : 'btn-outline'}`}
-            >
-              <Layers size={14} />
-              Shared Outages
-            </button>
-            <button
               onClick={() => onSelectTab('faq')}
               className={`btn btn-sm ${activeTab === 'faq' ? 'btn-navy' : 'btn-outline'}`}
             >
@@ -250,15 +243,20 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }
                 </div>
 
                 {/* User Profile Pill */}
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  backgroundColor: 'var(--bg-subtle)',
-                  padding: '4px 12px 4px 6px',
-                  borderRadius: 'var(--radius-full)',
-                  border: '1px solid var(--border-subtle)'
-                }}>
+                <div
+                  onClick={() => onSelectTab(currentUser.role === 'STUDENT' ? 'student-dashboard' : (currentUser.role === 'SYSTEM_ADMIN' ? 'admin-dashboard' : 'operator-dashboard'))}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    backgroundColor: 'var(--bg-subtle)',
+                    padding: '4px 12px 4px 6px',
+                    borderRadius: 'var(--radius-full)',
+                    border: '1px solid var(--border-subtle)',
+                    cursor: 'pointer'
+                  }}
+                  title="Go to Dashboard Workspace"
+                >
                   <div style={{
                     width: '32px',
                     height: '32px',
@@ -283,16 +281,6 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }
                     </div>
                   </div>
                 </div>
-
-                {/* Dashboard Shortcut */}
-                <button
-                  onClick={() => onSelectTab(currentUser.role === 'STUDENT' ? 'student-dashboard' : (currentUser.role === 'SYSTEM_ADMIN' ? 'admin-dashboard' : 'operator-dashboard'))}
-                  className="btn btn-primary btn-sm"
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <Shield size={14} />
-                  <span>Portal</span>
-                </button>
 
                 {/* Logout Button */}
                 <button
@@ -348,7 +336,6 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }
         }}>
           <button onClick={() => { onSelectTab('landing'); setMobileMenuOpen(false); }} className="btn btn-outline" style={{ justifyContent: 'flex-start' }}>Overview</button>
           <button onClick={() => { onSelectTab('how-it-works'); setMobileMenuOpen(false); }} className="btn btn-outline" style={{ justifyContent: 'flex-start' }}>How It Works</button>
-          <button onClick={() => { onSelectTab('shared-incidents'); setMobileMenuOpen(false); }} className="btn btn-outline" style={{ justifyContent: 'flex-start' }}>Shared Outages</button>
           <button onClick={() => { onSelectTab('faq'); setMobileMenuOpen(false); }} className="btn btn-outline" style={{ justifyContent: 'flex-start' }}>Help & FAQ</button>
           {!currentUser && (
             <button onClick={() => { onSelectTab('login'); setMobileMenuOpen(false); }} className="btn btn-primary" style={{ marginTop: '8px' }}>Sign In</button>
