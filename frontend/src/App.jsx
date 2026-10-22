@@ -87,17 +87,6 @@ export default function App() {
     setActiveTab('landing');
   };
 
-  const handleSwitchDemoUser = async (personaKey) => {
-    try {
-      const res = await api.demoLogin(personaKey, true); // Auto-verifies key for quick testing in dev mode
-      if (res?.data) {
-        handleLoginSuccess(res.data);
-      }
-    } catch (err) {
-      console.error('Switch user failed:', err);
-    }
-  };
-
   if (loading) {
     return (
       <div style={{
@@ -134,7 +123,6 @@ export default function App() {
         {activeTab === 'landing' && (
           <LandingPage
             onSelectTab={setActiveTab}
-            onDemoLogin={handleSwitchDemoUser}
           />
         )}
 
@@ -228,10 +216,10 @@ export default function App() {
                 CampusSetu
               </div>
               <p style={{ lineHeight: 1.5, color: '#64748b' }}>
-                Realistic college complaint lifecycle management, deterministic queue routing, and grounded academic assistance for KIET Group of Institutions.
+                Unified campus grievance redressal, deterministic facilities routing, and grounded academic assistance for KIET Group of Institutions.
               </p>
-              <div style={{ marginTop: '10px', fontSize: '0.72rem', color: '#0d9488', fontWeight: '700' }}>
-                INNOTECH26 Hackathon Initiative • Viksit Bharat 2047
+              <div style={{ marginTop: '10px', fontSize: '0.75rem', color: '#94a3b8', fontWeight: '600' }}>
+                KIET Group of Institutions • Enterprise Campus Portal
               </div>
             </div>
 
@@ -267,10 +255,10 @@ export default function App() {
             fontSize: '0.75rem'
           }}>
             <div>
-              © 2026 CampusSetu. Student Engineering Project for KIET INNOTECH26.
+              © 2026 CampusSetu. KIET Group of Institutions. All rights reserved.
             </div>
             <div>
-              Supervised Pilot Architecture • Port: 8081 Backend, 5173 Frontend
+              Enterprise Facilities & Academic Services Network
             </div>
           </div>
         </div>

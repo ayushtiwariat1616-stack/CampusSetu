@@ -114,13 +114,6 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
     }
   };
 
-  const fillCredentials = (userEmail, pass = 'CampusSetu@2026', key = '') => {
-    setEmail(userEmail);
-    setPassword(pass);
-    if (key) setOperatorKeyInput(key);
-    setError('');
-  };
-
   return (
     <div className="animate-fade-in" style={{ padding: '40px 0 60px' }}>
       <div className="container" style={{ maxWidth: '580px' }}>
@@ -604,72 +597,6 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
               </button>
             </form>
           )}
-
-          {/* DISCREET PILOT / EVALUATOR QUICK FILL ACCORDION */}
-          <details style={{
-            marginTop: '28px',
-            borderTop: '1px solid var(--border-subtle)',
-            paddingTop: '14px',
-            fontSize: '0.78rem',
-            color: 'var(--text-muted)'
-          }}>
-            <summary style={{ cursor: 'pointer', fontWeight: '700', color: 'var(--text-secondary)' }}>
-              Testing & Evaluation Reference Accounts (Default Pass: CampusSetu@2026)
-            </summary>
-            <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                <button
-                  type="button"
-                  onClick={() => { setTab('password'); fillCredentials('srijan.25002324@kiet.edu'); }}
-                  style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer', fontWeight: '700', color: '#0b2545' }}
-                >
-                  Srijan Shrivastava (Aryabhatt 105)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setTab('password'); fillCredentials('ananya.25001142@kiet.edu'); }}
-                  style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer', fontWeight: '700', color: '#0b2545' }}
-                >
-                  Ananya Singh (Sarojini 204)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setTab('password'); fillCredentials('ayush.25004108@kiet.edu'); }}
-                  style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}
-                >
-                  Ayush Sharma (Aryabhatt 214)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setTab('operator'); fillCredentials('warden.aryabhatt@kiet.edu', 'CampusSetu@2026', 'OPK-ARYA-WARD-2026'); }}
-                  style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}
-                >
-                  Warden Aryabhatt
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setTab('operator'); fillCredentials('warden.tagore@kiet.edu', 'CampusSetu@2026', 'OPK-TAGO-WARD-2026'); }}
-                  style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}
-                >
-                  Warden Tagore
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setTab('operator'); fillCredentials('warden.sarojini@kiet.edu', 'CampusSetu@2026', 'OPK-SARO-WARD-2026'); }}
-                  style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}
-                >
-                  Warden Sarojini
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setTab('operator'); fillCredentials('admin.campussetu@kiet.edu', 'CampusSetu@2026', 'OPK-ADMIN-ROOT-2026'); }}
-                  style={{ fontSize: '0.72rem', padding: '4px 8px', background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '4px', cursor: 'pointer' }}
-                >
-                  System Admin
-                </button>
-              </div>
-            </div>
-          </details>
         </div>
       </div>
     </div>

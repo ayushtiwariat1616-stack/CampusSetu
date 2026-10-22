@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import {
-  ShieldCheck,
   CheckCircle2,
   ArrowRight,
   Building,
@@ -10,7 +9,7 @@ import {
   Lock
 } from 'lucide-react';
 
-export default function LandingPage({ onSelectTab, onDemoLogin }) {
+export default function LandingPage({ onSelectTab }) {
   const [simCategory, setSimCategory] = useState('HOSTEL_FACILITY');
   const [simLocation, setSimLocation] = useState('HOSTEL');
   const [simHostel, setSimHostel] = useState('ARYABHATT');
@@ -45,35 +44,6 @@ export default function LandingPage({ onSelectTab, onDemoLogin }) {
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: '60px' }}>
-      {/* Hackathon Theme Banner */}
-      <section style={{
-        background: 'linear-gradient(90deg, #091827 0%, #0f2942 50%, #0d9488 100%)',
-        color: '#ffffff',
-        padding: '12px 0',
-        borderBottom: '1px solid rgba(255,255,255,0.1)'
-      }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8125rem' }}>
-            <span style={{
-              backgroundColor: 'rgba(255,255,255,0.15)',
-              padding: '2px 8px',
-              borderRadius: '4px',
-              fontWeight: '700',
-              letterSpacing: '0.04em'
-            }}>
-              INNOTECH26
-            </span>
-            <span style={{ fontWeight: '500' }}>
-              Building an Innovative, Secure, and Sustainable Viksit Bharat 2047
-            </span>
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#99f6e4', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <ShieldCheck size={14} />
-            Supervised Campus Pilot Architecture
-          </div>
-        </div>
-      </section>
-
       {/* Hero Section */}
       <section style={{
         backgroundColor: '#ffffff',
@@ -145,19 +115,17 @@ export default function LandingPage({ onSelectTab, onDemoLogin }) {
               </button>
             </div>
 
-            {/* Official Disclaimer Note */}
+            {/* Official Enterprise Operations Note */}
             <div style={{
               backgroundColor: 'var(--bg-subtle)',
-              borderLeft: '4px solid var(--accent-teal)',
+              borderLeft: '4px solid var(--primary-navy)',
               padding: '12px 16px',
               borderRadius: '0 8px 8px 0',
               fontSize: '0.8125rem',
-              color: 'var(--text-muted)',
+              color: 'var(--text-secondary)',
               lineHeight: 1.5
             }}>
-              <strong>Institutional Context:</strong> Built using publicly available KIET organizational structure.
-              This student engineering demonstration does not imply formal administrative adoption or replacement of
-              statutory internal grievance committees. Staff emails are strictly fictional demo accounts.
+              <strong>Institutional Operations:</strong> Enterprise service portal adhering to KIET organizational hierarchies, departmental laboratory protocols, and hostel administration standards.
             </div>
           </div>
         </div>
@@ -282,7 +250,7 @@ export default function LandingPage({ onSelectTab, onDemoLogin }) {
             <div style={{ textAlign: 'center', marginBottom: '28px' }}>
               <span className="badge badge-acknowledged" style={{ marginBottom: '8px' }}>Interactive Architecture</span>
               <h2 style={{ fontSize: '1.6rem', fontWeight: '800', color: 'var(--primary-navy)' }}>
-                Live Deterministic Routing Engine Demonstration
+                Deterministic Queue Routing & Dispatch Engine
               </h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginTop: '4px' }}>
                 Test how CampusSetu dispatches complaints according to institutional scoping rules:

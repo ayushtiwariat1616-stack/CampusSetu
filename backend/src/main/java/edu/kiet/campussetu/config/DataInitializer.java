@@ -85,7 +85,7 @@ public class DataInitializer implements CommandLineRunner {
             return;
         }
 
-        log.info("Initializing CampusSetu schema, organizational queues, and fictional demo data...");
+        log.info("Initializing CampusSetu schema, organizational queues, and baseline campus profiles...");
 
         // 1. Departments (8 configurable engineering/technical departments)
         List<Department> departments = List.of(
@@ -426,7 +426,7 @@ public class DataInitializer implements CommandLineRunner {
                 "Search time complexity: Average O(log n), worst case O(n) in degenerate skewed trees. AVL Tree height balance property ensures O(log n) worst case."
         ));
 
-        log.info("Data initialization complete. Seeded 8 departments, 6 hostels, 19 complaint queues, 11 demo accounts, 3 complaints, 1 incident, and 2 academic course guides.");
+        log.info("Data initialization complete. Seeded 8 departments, 6 hostels, 19 complaint queues, 11 institutional accounts, 3 complaints, 1 incident, and 2 academic course guides.");
     }
 
     private void seedOperatorKey(User user, String plaintextKey) {
