@@ -34,7 +34,7 @@ import {
 } from 'lucide-react';
 import { api } from '../api';
 
-export const isGirlStudent = (user) => {
+const isGirlStudent = (user) => {
   if (!user || user.role !== 'STUDENT') return false;
   if (user.isFemaleStudent) return true;
   if (user.gender === 'FEMALE') return true;
