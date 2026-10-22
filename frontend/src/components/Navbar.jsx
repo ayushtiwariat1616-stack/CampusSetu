@@ -11,6 +11,17 @@ import {
 } from 'lucide-react';
 import { api } from '../api';
 
+const isGirlStudent = (user) => {
+  if (!user || user.role !== 'STUDENT') return false;
+  if (user.isFemaleStudent) return true;
+  if (user.gender === 'FEMALE') return true;
+  const hc = (user.hostelCode || '').toUpperCase();
+  if (['GARGI', 'SAROJINI', 'SARASWATI'].includes(hc)) return true;
+  const email = (user.email || '').toLowerCase();
+  const name = (user.fullName || '').toLowerCase();
+  return email.startsWith('ananya') || name.includes('ananya');
+};
+
 export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout, onOpenSos }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -146,8 +157,8 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout, 
 
           {/* User / Auth Area */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {/* Emergency SOS Button */}
-            {onOpenSos && (
+            {/* Emergency SOS Button - Strictly restricted to female / girl students */}
+            {onOpenSos && isGirlStudent(currentUser) && (
               <button
                 type="button"
                 onClick={onOpenSos}

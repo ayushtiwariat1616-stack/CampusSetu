@@ -202,12 +202,13 @@ public class DataInitializer implements CommandLineRunner {
         // 6. Seed Users with Scopes & Individual Operator Keys
         String defaultPasswordHash = passwordEncoder.encode("CampusSetu@2026");
 
-        // Student 1: Ayush Sharma
+        // Student 1: Ayush Sharma (Boy)
         User student = new User("ayush.25004108@kiet.edu", "sub-google-ayush", "Ayush Sharma", UserRole.STUDENT, OnboardingStatus.APPROVED);
         student.setDepartmentCode("AIML");
         student.setHostelCode("ARYABHATT");
         student.setRoomNumber("214");
         student.setStudentRollNumber("25004108");
+        student.setGender("MALE");
         student.setPasswordHash(defaultPasswordHash);
         student = userRepository.save(student);
 
@@ -217,6 +218,7 @@ public class DataInitializer implements CommandLineRunner {
         srijan.setHostelCode("ARYABHATT");
         srijan.setRoomNumber("105");
         srijan.setStudentRollNumber("25002324");
+        srijan.setGender("MALE");
         srijan.setPasswordHash(defaultPasswordHash);
         userRepository.save(srijan);
 
@@ -226,6 +228,7 @@ public class DataInitializer implements CommandLineRunner {
         ananya.setHostelCode("SAROJINI");
         ananya.setRoomNumber("204");
         ananya.setStudentRollNumber("25001142");
+        ananya.setGender("FEMALE");
         ananya.setPasswordHash(defaultPasswordHash);
         userRepository.save(ananya);
 

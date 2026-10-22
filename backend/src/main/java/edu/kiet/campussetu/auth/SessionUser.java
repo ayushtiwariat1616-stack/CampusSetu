@@ -18,6 +18,7 @@ public class SessionUser implements Serializable {
     private String hostelCode;
     private String roomNumber;
     private String studentRollNumber;
+    private String gender; // MALE, FEMALE, OTHER
     private boolean operatorKeyVerified;
     private List<String> authorizedQueueCodes = new ArrayList<>();
     private List<String> authorizedScopeTargets = new ArrayList<>();
@@ -76,6 +77,19 @@ public class SessionUser implements Serializable {
 
     public String getStudentRollNumber() { return studentRollNumber; }
     public void setStudentRollNumber(String studentRollNumber) { this.studentRollNumber = studentRollNumber; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
+
+    public boolean isFemaleStudent() {
+        if (role != UserRole.STUDENT) return false;
+        if ("FEMALE".equalsIgnoreCase(gender)) return true;
+        if (hostelCode != null) {
+            String hc = hostelCode.toUpperCase();
+            return hc.equals("GARGI") || hc.equals("SAROJINI") || hc.equals("SARASWATI");
+        }
+        return false;
+    }
 
     public boolean isOperatorKeyVerified() { return operatorKeyVerified; }
     public void setOperatorKeyVerified(boolean operatorKeyVerified) { this.operatorKeyVerified = operatorKeyVerified; }

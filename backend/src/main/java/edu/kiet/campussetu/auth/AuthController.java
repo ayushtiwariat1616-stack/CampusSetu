@@ -65,22 +65,7 @@ public class AuthController {
             return ResponseEntity.ok(ApiResponse.ok("Not authenticated", null));
         }
 
-        AuthMeResponse response = new AuthMeResponse(
-                sessionUser.getUserId(),
-                sessionUser.getEmail(),
-                sessionUser.getFullName(),
-                sessionUser.getRole().name(),
-                sessionUser.getOnboardingStatus().name(),
-                sessionUser.getDepartmentCode(),
-                sessionUser.getHostelCode(),
-                sessionUser.getRoomNumber(),
-                sessionUser.getStudentRollNumber(),
-                sessionUser.isOperatorKeyVerified(),
-                sessionUser.isOperator() && !sessionUser.isOperatorKeyVerified(), // needsKey
-                sessionUser.getAuthorizedQueueCodes(),
-                sessionUser.getOperatorRoles()
-        );
-        return ResponseEntity.ok(ApiResponse.ok(response));
+        return ResponseEntity.ok(ApiResponse.ok(buildAuthMeResponse(sessionUser)));
     }
 
     /**
@@ -114,22 +99,7 @@ public class AuthController {
         sessionUser.setAuthorizedQueueCodes(queues);
         authHelper.setSessionUser(request, sessionUser);
 
-        AuthMeResponse response = new AuthMeResponse(
-                sessionUser.getUserId(),
-                sessionUser.getEmail(),
-                sessionUser.getFullName(),
-                sessionUser.getRole().name(),
-                sessionUser.getOnboardingStatus().name(),
-                sessionUser.getDepartmentCode(),
-                sessionUser.getHostelCode(),
-                sessionUser.getRoomNumber(),
-                sessionUser.getStudentRollNumber(),
-                true,
-                false,
-                sessionUser.getAuthorizedQueueCodes(),
-                sessionUser.getOperatorRoles()
-        );
-        return ResponseEntity.ok(ApiResponse.ok("Operator access verified successfully.", response));
+        return ResponseEntity.ok(ApiResponse.ok("Operator access verified successfully.", buildAuthMeResponse(sessionUser)));
     }
 
     /**
@@ -183,28 +153,13 @@ public class AuthController {
             }
         }
 
+        sessionUser.setGender(user.getGender());
         authHelper.setSessionUser(request, sessionUser);
 
         auditService.record("AUTH", user.getEmail(), "DEMO_LOGIN", "DemoPortal",
                 "Logged in as " + accountType + " (Dev Mode)", request.getRemoteAddr());
 
-        AuthMeResponse response = new AuthMeResponse(
-                sessionUser.getUserId(),
-                sessionUser.getEmail(),
-                sessionUser.getFullName(),
-                sessionUser.getRole().name(),
-                sessionUser.getOnboardingStatus().name(),
-                sessionUser.getDepartmentCode(),
-                sessionUser.getHostelCode(),
-                sessionUser.getRoomNumber(),
-                sessionUser.getStudentRollNumber(),
-                sessionUser.isOperatorKeyVerified(),
-                sessionUser.isOperator() && !sessionUser.isOperatorKeyVerified(),
-                sessionUser.getAuthorizedQueueCodes(),
-                sessionUser.getOperatorRoles()
-        );
-
-        return ResponseEntity.ok(ApiResponse.ok("Demo login authenticated.", response));
+        return ResponseEntity.ok(ApiResponse.ok("Demo login authenticated.", buildAuthMeResponse(sessionUser)));
     }
 
     private User resolveDemoUser(String accountType) {
@@ -270,6 +225,7 @@ public class AuthController {
         sessionUser.setHostelCode(user.getHostelCode());
         sessionUser.setRoomNumber(user.getRoomNumber());
         sessionUser.setStudentRollNumber(user.getStudentRollNumber());
+        sessionUser.setGender(user.getGender());
 
         if (user.getPrimaryRole() == UserRole.STUDENT) {
             sessionUser.setOperatorKeyVerified(true);
@@ -340,6 +296,7 @@ public class AuthController {
         sessionUser.setHostelCode(user.getHostelCode());
         sessionUser.setRoomNumber(user.getRoomNumber());
         sessionUser.setStudentRollNumber(user.getStudentRollNumber());
+        sessionUser.setGender(user.getGender());
 
         if (user.getPrimaryRole() == UserRole.STUDENT) {
             sessionUser.setOperatorKeyVerified(true);
@@ -393,6 +350,9 @@ public class AuthController {
         newUser.setHostelCode(req.hostelCode() != null && !req.hostelCode().isBlank() ? req.hostelCode().trim() : "ARYABHATT");
         newUser.setRoomNumber(req.roomNumber() != null ? req.roomNumber().trim() : null);
         newUser.setStudentRollNumber(req.studentRollNumber() != null ? req.studentRollNumber().trim() : null);
+        String gender = req.gender() != null && !req.gender().isBlank() ? req.gender().trim().toUpperCase() :
+                (List.of("GARGI", "SAROJINI", "SARASWATI").contains(newUser.getHostelCode()) ? "FEMALE" : "MALE");
+        newUser.setGender(gender);
         newUser.setOnboardingStatus(OnboardingStatus.APPROVED);
 
         User savedUser = userRepository.save(newUser);
@@ -409,6 +369,7 @@ public class AuthController {
         sessionUser.setHostelCode(savedUser.getHostelCode());
         sessionUser.setRoomNumber(savedUser.getRoomNumber());
         sessionUser.setStudentRollNumber(savedUser.getStudentRollNumber());
+        sessionUser.setGender(savedUser.getGender());
         sessionUser.setOperatorKeyVerified(true);
 
         authHelper.setSessionUser(request, sessionUser);
@@ -430,6 +391,8 @@ public class AuthController {
                 sessionUser.getHostelCode(),
                 sessionUser.getRoomNumber(),
                 sessionUser.getStudentRollNumber(),
+                sessionUser.getGender(),
+                sessionUser.isFemaleStudent(),
                 sessionUser.isOperatorKeyVerified(),
                 sessionUser.isOperator() && !sessionUser.isOperatorKeyVerified(),
                 sessionUser.getAuthorizedQueueCodes(),
@@ -445,7 +408,8 @@ public class AuthController {
             String departmentCode,
             String hostelCode,
             String roomNumber,
-            String studentRollNumber
+            String studentRollNumber,
+            String gender
     ) {}
     public record GoogleAuthRequest(String email, String fullName) {}
     public record VerifyKeyRequest(String operatorKey) {}
@@ -460,6 +424,8 @@ public class AuthController {
             String hostelCode,
             String roomNumber,
             String studentRollNumber,
+            String gender,
+            boolean isFemaleStudent,
             boolean operatorKeyVerified,
             boolean needsKey,
             List<String> authorizedQueueCodes,

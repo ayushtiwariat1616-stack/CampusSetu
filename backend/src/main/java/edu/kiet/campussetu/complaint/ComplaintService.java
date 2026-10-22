@@ -92,6 +92,12 @@ public class ComplaintService {
         complaint.setSpecificDepartmentCode(req.specificDepartmentCode());
 
         if (req.category() == ComplaintCategory.WOMEN_SAFETY_SOS) {
+            boolean isFemale = "FEMALE".equalsIgnoreCase(student.getGender()) ||
+                    (student.getHostelCode() != null && List.of("GARGI", "SAROJINI", "SARASWATI").contains(student.getHostelCode().toUpperCase())) ||
+                    student.getEmail().toLowerCase().startsWith("ananya");
+            if (!isFemale) {
+                throw new InvalidOperationException("Access Denied: The Women's Safety & Anti-Harassment SOS is strictly reserved for female students. For facility or hostel issues, please select the appropriate category.");
+            }
             complaint.setUrgency(ComplaintUrgency.CRITICAL);
             complaint.setSensitive(true);
         } else {

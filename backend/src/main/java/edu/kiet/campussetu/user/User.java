@@ -49,6 +49,9 @@ public class User {
     @Column(length = 50)
     private String studentRollNumber;
 
+    @Column(length = 20)
+    private String gender; // MALE, FEMALE, OTHER
+
     @Column(nullable = false)
     private boolean active = true;
 
@@ -106,6 +109,9 @@ public class User {
 
     public String getStudentRollNumber() { return studentRollNumber; }
     public void setStudentRollNumber(String studentRollNumber) { this.studentRollNumber = studentRollNumber; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
 
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }

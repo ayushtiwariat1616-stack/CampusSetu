@@ -31,6 +31,7 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
   const [regPassword, setRegPassword] = useState('');
   const [regDepartment, setRegDepartment] = useState('AIML');
   const [regHostel, setRegHostel] = useState('ARYABHATT');
+  const [regGender, setRegGender] = useState('MALE');
   const [regRoom, setRegRoom] = useState('');
   const [regRoll, setRegRoll] = useState('');
 
@@ -82,6 +83,7 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
         hostelCode: regHostel,
         roomNumber: regRoom.trim(),
         studentRollNumber: regRoll.trim(),
+        gender: regGender,
       });
       if (res?.data) {
         setSuccessMsg('Account registered successfully! Welcome to CampusSetu.');
@@ -562,7 +564,15 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                   <select
                     className="form-select"
                     value={regHostel}
-                    onChange={(e) => setRegHostel(e.target.value)}
+                    onChange={(e) => {
+                      const h = e.target.value;
+                      setRegHostel(h);
+                      if (['GARGI', 'SAROJINI', 'SARASWATI'].includes(h)) {
+                        setRegGender('FEMALE');
+                      } else if (['CV_RAMAN', 'CHANDRAGUPT', 'TAGORE', 'ARYABHATT', 'VIVEKANAND', 'CHANAKYA'].includes(h)) {
+                        setRegGender('MALE');
+                      }
+                    }}
                   >
                     <option value="CV_RAMAN">C.V. Raman Hostel (1st Year Boys)</option>
                     <option value="CHANDRAGUPT">Chandragupt Hostel (1st Year Boys)</option>
@@ -578,7 +588,18 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label className="form-label">Gender *</label>
+                  <select
+                    className="form-select"
+                    value={regGender}
+                    onChange={(e) => setRegGender(e.target.value)}
+                  >
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female (SOS Enabled)</option>
+                  </select>
+                </div>
                 <div className="form-group" style={{ margin: 0 }}>
                   <label className="form-label">Room Number</label>
                   <input
@@ -652,7 +673,7 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontWeight: '800', color: 'var(--primary-navy)' }}>Srijan Shrivastava</span>
-                    <span className="badge badge-submitted" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Student</span>
+                    <span className="badge badge-submitted" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Male Student</span>
                   </div>
                   <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
                     Aryabhatt 105 • CSE (2nd/3rd Yr Boys)
@@ -671,15 +692,16 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                   padding: '9px 12px',
                   borderRadius: 'var(--radius-md)',
                   fontSize: '0.78rem',
-                  border: '1px solid #cbd5e1'
+                  border: '1px solid #fca5a5',
+                  backgroundColor: '#fffdfd'
                 }}
               >
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontWeight: '800', color: 'var(--primary-navy)' }}>Ananya Singh</span>
-                    <span className="badge badge-submitted" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Student</span>
+                    <span style={{ fontWeight: '800', color: '#991b1b' }}>Ananya Singh</span>
+                    <span className="badge" style={{ fontSize: '0.65rem', padding: '1px 6px', backgroundColor: '#fee2e2', color: '#dc2626', fontWeight: '800' }}>Female • SOS Active</span>
                   </div>
-                  <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                  <span style={{ color: '#b91c1c', fontSize: '0.72rem' }}>
                     Sarojini 204 • IT (2nd/3rd Yr Girls)
                   </span>
                 </div>
@@ -702,10 +724,10 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontWeight: '800', color: 'var(--primary-navy)' }}>Ayush Sharma</span>
-                    <span className="badge badge-submitted" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Student</span>
+                    <span className="badge badge-submitted" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Male Student</span>
                   </div>
                   <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
-                    Aryabhatt 214 • AIML
+                    Aryabhatt 214 • AIML (2nd/3rd Yr Boys)
                   </span>
                 </div>
               </button>
