@@ -58,24 +58,30 @@ export default function LandingPage({ onSelectTab }) {
     <div className="animate-fade-in" style={{ paddingBottom: '60px' }}>
       {/* Hero Section */}
       <section style={{
-        backgroundColor: '#ffffff',
+        position: 'relative',
         borderBottom: '1px solid var(--border-subtle)',
-        padding: '56px 0 48px'
+        padding: '64px 0 54px',
+        backgroundImage: 'linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.96) 42%, rgba(255, 255, 255, 0.78) 65%, rgba(255, 255, 255, 0.28) 100%), url("/kiet_campus.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center right',
+        backgroundRepeat: 'no-repeat',
+        overflow: 'hidden'
       }}>
-        <div className="container">
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div style={{ maxWidth: '820px' }}>
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              padding: '4px 12px',
-              backgroundColor: 'var(--accent-teal-subtle)',
+              padding: '5px 14px',
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
               border: '1px solid #99f6e4',
               borderRadius: 'var(--radius-full)',
               color: 'var(--accent-teal)',
               fontSize: '0.8125rem',
               fontWeight: '700',
-              marginBottom: '16px'
+              marginBottom: '16px',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
             }}>
               <span>KIET Group of Institutions</span>
               <span>•</span>
@@ -88,7 +94,8 @@ export default function LandingPage({ onSelectTab }) {
               color: 'var(--primary-navy)',
               lineHeight: 1.15,
               letterSpacing: '-0.03em',
-              marginBottom: '18px'
+              marginBottom: '18px',
+              textShadow: '0 1px 2px rgba(255,255,255,0.8)'
             }}>
               Realistic Campus Complaints, Deterministic Routing & Academic Assistance
             </h1>
@@ -115,12 +122,14 @@ export default function LandingPage({ onSelectTab }) {
               <button
                 onClick={() => onSelectTab('how-it-works')}
                 className="btn btn-outline btn-lg"
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.92)', backdropFilter: 'blur(6px)' }}
               >
                 Inspect Routing Architecture
               </button>
               <button
                 onClick={() => onSelectTab('academics')}
                 className="btn btn-outline btn-lg"
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.92)', backdropFilter: 'blur(6px)' }}
               >
                 <FileText size={18} />
                 Course Notes & Assistant
@@ -135,30 +144,36 @@ export default function LandingPage({ onSelectTab }) {
               margin: '28px 0 20px'
             }}>
               <div style={{
-                backgroundColor: 'var(--bg-subtle)',
+                backgroundColor: 'rgba(255, 255, 255, 0.92)',
+                backdropFilter: 'blur(10px)',
                 padding: '14px 16px',
                 borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-subtle)'
+                border: '1px solid rgba(226, 232, 240, 0.9)',
+                boxShadow: '0 4px 12px rgba(11, 37, 69, 0.05)'
               }}>
                 <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--primary-navy)' }}>9 Hostels</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Mapped by Year & Gender</div>
               </div>
 
               <div style={{
-                backgroundColor: 'var(--bg-subtle)',
+                backgroundColor: 'rgba(255, 255, 255, 0.92)',
+                backdropFilter: 'blur(10px)',
                 padding: '14px 16px',
                 borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-subtle)'
+                border: '1px solid rgba(226, 232, 240, 0.9)',
+                boxShadow: '0 4px 12px rgba(11, 37, 69, 0.05)'
               }}>
                 <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--accent-blue)' }}>8 Departments</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Lab & Classroom Queues</div>
               </div>
 
               <div style={{
-                backgroundColor: 'var(--bg-subtle)',
+                backgroundColor: 'rgba(255, 255, 255, 0.92)',
+                backdropFilter: 'blur(10px)',
                 padding: '14px 16px',
                 borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-subtle)'
+                border: '1px solid rgba(226, 232, 240, 0.9)',
+                boxShadow: '0 4px 12px rgba(11, 37, 69, 0.05)'
               }}>
                 <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--accent-teal)' }}>100% Verified</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Student Closure Confirmation</div>
@@ -167,17 +182,42 @@ export default function LandingPage({ onSelectTab }) {
 
             {/* Official Enterprise Operations Note */}
             <div style={{
-              backgroundColor: 'var(--bg-subtle)',
+              backgroundColor: 'rgba(255, 255, 255, 0.94)',
+              backdropFilter: 'blur(10px)',
               borderLeft: '4px solid var(--primary-navy)',
               padding: '12px 16px',
               borderRadius: '0 8px 8px 0',
               fontSize: '0.8125rem',
               color: 'var(--text-secondary)',
-              lineHeight: 1.5
+              lineHeight: 1.5,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
             }}>
               <strong>Institutional Operations:</strong> Enterprise service portal adhering to KIET organizational hierarchies, departmental laboratory protocols, and hostel administration standards.
             </div>
           </div>
+        </div>
+
+        {/* Floating Campus Badge on bottom right */}
+        <div style={{
+          position: 'absolute',
+          bottom: '16px',
+          right: '24px',
+          backgroundColor: 'rgba(11, 37, 69, 0.85)',
+          color: '#ffffff',
+          backdropFilter: 'blur(8px)',
+          padding: '6px 14px',
+          borderRadius: 'var(--radius-full)',
+          fontSize: '0.72rem',
+          fontWeight: '700',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '6px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+          border: '1px solid rgba(255,255,255,0.25)',
+          zIndex: 3
+        }}>
+          <Building size={14} color="#f8b81f" />
+          <span>KIET Group of Institutions • Main Campus</span>
         </div>
       </section>
 
