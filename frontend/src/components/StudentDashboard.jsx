@@ -455,6 +455,77 @@ export default function StudentDashboard({ currentUser }) {
           </div>
         )}
 
+        {/* Real-time Status Metric Cards */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '14px',
+          marginBottom: '22px'
+        }}>
+          <div
+            onClick={() => setActiveTab('my-complaints')}
+            className="card card-interactive"
+            style={{ padding: '16px 20px', cursor: 'pointer', borderLeft: '4px solid var(--primary-navy)' }}
+          >
+            <div style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              My Filed Tickets
+            </div>
+            <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--primary-navy)', marginTop: '2px' }}>
+              {complaints.length}
+            </div>
+          </div>
+
+          <div
+            onClick={() => setActiveTab('my-complaints')}
+            className="card card-interactive"
+            style={{ padding: '16px 20px', cursor: 'pointer', borderLeft: '4px solid var(--accent-blue)' }}
+          >
+            <div style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              Active In-Service
+            </div>
+            <div style={{ fontSize: '1.75rem', fontWeight: '800', color: 'var(--accent-blue)', marginTop: '2px' }}>
+              {complaints.filter(c => c.status === 'IN_PROGRESS' || c.status === 'ACKNOWLEDGED').length}
+            </div>
+          </div>
+
+          <div
+            onClick={() => setActiveTab('my-complaints')}
+            className="card card-interactive"
+            style={{
+              padding: '16px 20px',
+              cursor: 'pointer',
+              borderLeft: '4px solid var(--kiet-gold)',
+              backgroundColor: complaints.some(c => c.status === 'RESOLUTION_PROPOSED') ? '#fffdf0' : '#ffffff'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                Inspection Needed
+              </div>
+              {complaints.some(c => c.status === 'RESOLUTION_PROPOSED') && (
+                <span className="pulse-dot" style={{ backgroundColor: '#d97706' }}></span>
+              )}
+            </div>
+            <div style={{ fontSize: '1.75rem', fontWeight: '800', color: '#b45309', marginTop: '2px' }}>
+              {complaints.filter(c => c.status === 'RESOLUTION_PROPOSED').length}
+            </div>
+          </div>
+
+          <div
+            onClick={() => setActiveTab('academics')}
+            className="card card-interactive"
+            style={{ padding: '16px 20px', cursor: 'pointer', borderLeft: '4px solid var(--accent-teal)' }}
+          >
+            <div style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              AI Study Assistant
+            </div>
+            <div style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--accent-teal)', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Sparkles size={18} color="#f59e0b" />
+              Llama 3 Ready
+            </div>
+          </div>
+        </div>
+
         {/* Tab Selection Navigation */}
         <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '12px', flexWrap: 'wrap' }}>
           <button
@@ -549,12 +620,19 @@ export default function StudentDashboard({ currentUser }) {
                       value={formData.specificHostelCode}
                       onChange={(e) => setFormData({ ...formData, specificHostelCode: e.target.value })}
                     >
-                      <option value="ARYABHATT">Aryabhatt Hostel (First Year Boys)</option>
-                      <option value="TAGORE">Tagore Hostel (Boys)</option>
-                      <option value="CV_RAMAN">C.V. Raman Hostel (Senior Boys)</option>
-                      <option value="SAROJINI">Sarojini Hostel (Girls)</option>
-                      <option value="SARASWATI">Saraswati Hostel (Girls)</option>
-                      <option value="GARGI">Gargi Hostel (Girls)</option>
+                      <optgroup label="Boys Hostels (Allocated by Year)">
+                        <option value="CV_RAMAN">C.V. Raman Hostel (1st Year Boys)</option>
+                        <option value="CHANDRAGUPT">Chandragupt Hostel (1st Year Boys)</option>
+                        <option value="TAGORE">Tagore Hostel (2nd Year Boys)</option>
+                        <option value="ARYABHATT">Aryabhatt Hostel (2nd & 3rd Year Boys)</option>
+                        <option value="VIVEKANAND">Vivekanand Hostel (2nd & 3rd Year Boys)</option>
+                        <option value="CHANAKYA">Chanakya Hostel (4th Year Boys)</option>
+                      </optgroup>
+                      <optgroup label="Girls Hostels (Allocated by Year)">
+                        <option value="GARGI">Gargi Hostel (1st Year Girls)</option>
+                        <option value="SAROJINI">Sarojini Hostel (2nd & 3rd Year Girls)</option>
+                        <option value="SARASWATI">Saraswati Hostel (2nd, 3rd & 4th Year Girls)</option>
+                      </optgroup>
                     </select>
                   </div>
                 )}

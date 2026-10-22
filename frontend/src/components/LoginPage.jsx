@@ -114,6 +114,18 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
     }
   };
 
+  const fillCredentials = (userEmail, pass = 'CampusSetu@2026', key = '') => {
+    setEmail(userEmail);
+    setPassword(pass);
+    if (key) {
+      setOperatorKeyInput(key);
+      setTab('operator');
+    } else {
+      setTab('password');
+    }
+    setError('');
+  };
+
   return (
     <div className="animate-fade-in" style={{ padding: '40px 0 60px' }}>
       <div className="container" style={{ maxWidth: '580px' }}>
@@ -552,13 +564,16 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                     value={regHostel}
                     onChange={(e) => setRegHostel(e.target.value)}
                   >
-                    <option value="ARYABHATT">Aryabhatt Hostel (First Year Boys)</option>
-                    <option value="TAGORE">Tagore Hostel (Boys)</option>
-                    <option value="CV_RAMAN">C.V. Raman Hostel (Senior Boys)</option>
-                    <option value="SAROJINI">Sarojini Hostel (Girls)</option>
-                    <option value="SARASWATI">Saraswati Hostel (Girls)</option>
-                    <option value="GARGI">Gargi Hostel (Girls)</option>
-                    <option value="DAY_SCHOLAR">Day Scholar (Transit)</option>
+                    <option value="CV_RAMAN">C.V. Raman Hostel (1st Year Boys)</option>
+                    <option value="CHANDRAGUPT">Chandragupt Hostel (1st Year Boys)</option>
+                    <option value="TAGORE">Tagore Hostel (2nd Year Boys)</option>
+                    <option value="ARYABHATT">Aryabhatt Hostel (2nd & 3rd Year Boys)</option>
+                    <option value="VIVEKANAND">Vivekanand Hostel (2nd & 3rd Year Boys)</option>
+                    <option value="CHANAKYA">Chanakya Hostel (4th Year Boys)</option>
+                    <option value="GARGI">Gargi Hostel (1st Year Girls)</option>
+                    <option value="SAROJINI">Sarojini Hostel (2nd & 3rd Year Girls)</option>
+                    <option value="SARASWATI">Saraswati Hostel (2nd, 3rd & 4th Year Girls)</option>
+                    <option value="DAY_SCHOLAR">Day Scholar (Transit / Day Boarder)</option>
                   </select>
                 </div>
               </div>
@@ -597,6 +612,206 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
               </button>
             </form>
           )}
+
+          {/* Quick Access Campus Directory Accounts */}
+          <div style={{
+            marginTop: '28px',
+            borderTop: '1px solid var(--border-subtle)',
+            paddingTop: '20px'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '12px'
+            }}>
+              <div style={{ fontSize: '0.8125rem', fontWeight: '800', color: 'var(--primary-navy)', letterSpacing: '0.01em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <span className="pulse-dot" style={{ backgroundColor: '#10b981' }}></span>
+                Campus Accounts Fast-Access (One-Click Fill)
+              </div>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                Default: <code>CampusSetu@2026</code>
+              </span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '8px' }}>
+              {/* Srijan Shrivastava */}
+              <button
+                type="button"
+                onClick={() => fillCredentials('srijan.25002324@kiet.edu')}
+                className="btn btn-outline"
+                style={{
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  padding: '9px 12px',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.78rem',
+                  border: '1px solid #cbd5e1'
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: '800', color: 'var(--primary-navy)' }}>Srijan Shrivastava</span>
+                    <span className="badge badge-submitted" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Student</span>
+                  </div>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                    Aryabhatt 105 • CSE (2nd/3rd Yr Boys)
+                  </span>
+                </div>
+              </button>
+
+              {/* Ananya Singh */}
+              <button
+                type="button"
+                onClick={() => fillCredentials('ananya.25001142@kiet.edu')}
+                className="btn btn-outline"
+                style={{
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  padding: '9px 12px',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.78rem',
+                  border: '1px solid #cbd5e1'
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: '800', color: 'var(--primary-navy)' }}>Ananya Singh</span>
+                    <span className="badge badge-submitted" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Student</span>
+                  </div>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                    Sarojini 204 • IT (2nd/3rd Yr Girls)
+                  </span>
+                </div>
+              </button>
+
+              {/* Ayush Sharma */}
+              <button
+                type="button"
+                onClick={() => fillCredentials('ayush.25004108@kiet.edu')}
+                className="btn btn-outline"
+                style={{
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  padding: '9px 12px',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.78rem',
+                  border: '1px solid #cbd5e1'
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: '800', color: 'var(--primary-navy)' }}>Ayush Sharma</span>
+                    <span className="badge badge-submitted" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Student</span>
+                  </div>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                    Aryabhatt 214 • AIML
+                  </span>
+                </div>
+              </button>
+
+              {/* Warden Aryabhatt */}
+              <button
+                type="button"
+                onClick={() => fillCredentials('warden.aryabhatt@kiet.edu', 'CampusSetu@2026', 'OPK-ARYA-WARD-2026')}
+                className="btn btn-outline"
+                style={{
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  padding: '9px 12px',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.78rem',
+                  border: '1px solid #cbd5e1'
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: '800', color: 'var(--primary-navy)' }}>Warden Aryabhatt</span>
+                    <span className="badge badge-acknowledged" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Operator</span>
+                  </div>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                    Key: OPK-ARYA-WARD-2026
+                  </span>
+                </div>
+              </button>
+
+              {/* Warden Tagore */}
+              <button
+                type="button"
+                onClick={() => fillCredentials('warden.tagore@kiet.edu', 'CampusSetu@2026', 'OPK-TAGO-WARD-2026')}
+                className="btn btn-outline"
+                style={{
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  padding: '9px 12px',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.78rem',
+                  border: '1px solid #cbd5e1'
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: '800', color: 'var(--primary-navy)' }}>Warden Tagore</span>
+                    <span className="badge badge-acknowledged" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Operator</span>
+                  </div>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                    Tagore (2nd Yr Boys) • Key: OPK-TAGO...
+                  </span>
+                </div>
+              </button>
+
+              {/* Warden Sarojini */}
+              <button
+                type="button"
+                onClick={() => fillCredentials('warden.sarojini@kiet.edu', 'CampusSetu@2026', 'OPK-SARO-WARD-2026')}
+                className="btn btn-outline"
+                style={{
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  padding: '9px 12px',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.78rem',
+                  border: '1px solid #cbd5e1'
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: '800', color: 'var(--primary-navy)' }}>Warden Sarojini</span>
+                    <span className="badge badge-acknowledged" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Operator</span>
+                  </div>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                    Sarojini (2nd/3rd Yr Girls) • Key: OPK-SARO...
+                  </span>
+                </div>
+              </button>
+
+              {/* System Admin */}
+              <button
+                type="button"
+                onClick={() => fillCredentials('admin.campussetu@kiet.edu', 'CampusSetu@2026', 'OPK-ADMIN-ROOT-2026')}
+                className="btn btn-outline"
+                style={{
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  padding: '9px 12px',
+                  borderRadius: 'var(--radius-md)',
+                  fontSize: '0.78rem',
+                  border: '1px solid #cbd5e1',
+                  gridColumn: '1 / -1'
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontWeight: '800', color: 'var(--kiet-crimson)' }}>System Administrator (Super User)</span>
+                    <span className="badge badge-resolution_proposed" style={{ fontSize: '0.65rem', padding: '1px 6px' }}>Admin Root</span>
+                  </div>
+                  <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
+                    Director General Grievance Cell • Key: OPK-ADMIN-ROOT-2026
+                  </span>
+                </div>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

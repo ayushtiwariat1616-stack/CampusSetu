@@ -17,11 +17,23 @@ export default function LandingPage({ onSelectTab }) {
 
   const getSimResult = () => {
     if (simLocation === 'HOSTEL') {
+      const hostelNames = {
+        CV_RAMAN: 'C.V. Raman Hostel (1st Year Boys)',
+        CHANDRAGUPT: 'Chandragupt Hostel (1st Year Boys)',
+        TAGORE: 'Tagore Hostel (2nd Year Boys)',
+        ARYABHATT: 'Aryabhatt Hostel (2nd & 3rd Year Boys)',
+        VIVEKANAND: 'Vivekanand Hostel (2nd & 3rd Year Boys)',
+        CHANAKYA: 'Chanakya Hostel (4th Year Boys)',
+        GARGI: 'Gargi Hostel (1st Year Girls)',
+        SAROJINI: 'Sarojini Hostel (2nd & 3rd Year Girls)',
+        SARASWATI: 'Saraswati Hostel (2nd, 3rd & 4th Year Girls)'
+      };
+      const displayHostel = hostelNames[simHostel] || `${simHostel} Hostel`;
       return {
         queue: `QUEUE_HOSTEL_${simHostel}_WARDEN`,
-        office: `${simHostel === 'ARYABHATT' ? 'Aryabhatt Hostel' : simHostel} Warden Desk`,
-        escalation: `${simHostel} Rector -> Chief Rector`,
-        privacy: 'Confined exclusively to this hostel warden inbox. Does not broadcast to college administrators.'
+        office: `${displayHostel} Warden Desk`,
+        escalation: `${displayHostel} Rector -> Chief Rector`,
+        privacy: 'Confined exclusively to this hostel warden inbox. Does not broadcast to central administration.'
       };
     }
     if (simLocation === 'DEPARTMENT') {
@@ -115,6 +127,44 @@ export default function LandingPage({ onSelectTab }) {
               </button>
             </div>
 
+            {/* Live Institutional Indicators */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gap: '12px',
+              margin: '28px 0 20px'
+            }}>
+              <div style={{
+                backgroundColor: 'var(--bg-subtle)',
+                padding: '14px 16px',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-subtle)'
+              }}>
+                <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--primary-navy)' }}>9 Hostels</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Mapped by Year & Gender</div>
+              </div>
+
+              <div style={{
+                backgroundColor: 'var(--bg-subtle)',
+                padding: '14px 16px',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-subtle)'
+              }}>
+                <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--accent-blue)' }}>8 Departments</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Lab & Classroom Queues</div>
+              </div>
+
+              <div style={{
+                backgroundColor: 'var(--bg-subtle)',
+                padding: '14px 16px',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-subtle)'
+              }}>
+                <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--accent-teal)' }}>100% Verified</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Student Closure Confirmation</div>
+              </div>
+            </div>
+
             {/* Official Enterprise Operations Note */}
             <div style={{
               backgroundColor: 'var(--bg-subtle)',
@@ -149,7 +199,7 @@ export default function LandingPage({ onSelectTab }) {
             gap: '20px'
           }}>
             {/* Pillar 1 */}
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="card card-interactive" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{
                 width: '44px',
                 height: '44px',
@@ -172,7 +222,7 @@ export default function LandingPage({ onSelectTab }) {
             </div>
 
             {/* Pillar 2 */}
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="card card-interactive" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{
                 width: '44px',
                 height: '44px',
@@ -195,7 +245,7 @@ export default function LandingPage({ onSelectTab }) {
             </div>
 
             {/* Pillar 3 */}
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="card card-interactive" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{
                 width: '44px',
                 height: '44px',
@@ -218,7 +268,7 @@ export default function LandingPage({ onSelectTab }) {
             </div>
 
             {/* Pillar 4 */}
-            <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="card card-interactive" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{
                 width: '44px',
                 height: '44px',
@@ -280,11 +330,19 @@ export default function LandingPage({ onSelectTab }) {
                       value={simHostel}
                       onChange={(e) => setSimHostel(e.target.value)}
                     >
-                      <option value="ARYABHATT">Aryabhatt Hostel (1st Year Boys)</option>
-                      <option value="CV_RAMAN">C.V. Raman Hostel (Boys)</option>
-                      <option value="TAGORE">Tagore Hostel (Boys)</option>
-                      <option value="SARASWATI">Saraswati Hostel (Girls)</option>
-                      <option value="GARGI">Gargi Hostel (Girls)</option>
+                      <optgroup label="Boys Hostels (Allocated by Year)">
+                        <option value="CV_RAMAN">C.V. Raman Hostel (1st Year Boys)</option>
+                        <option value="CHANDRAGUPT">Chandragupt Hostel (1st Year Boys)</option>
+                        <option value="TAGORE">Tagore Hostel (2nd Year Boys)</option>
+                        <option value="ARYABHATT">Aryabhatt Hostel (2nd & 3rd Year Boys)</option>
+                        <option value="VIVEKANAND">Vivekanand Hostel (2nd & 3rd Year Boys)</option>
+                        <option value="CHANAKYA">Chanakya Hostel (4th Year Boys)</option>
+                      </optgroup>
+                      <optgroup label="Girls Hostels (Allocated by Year)">
+                        <option value="GARGI">Gargi Hostel (1st Year Girls)</option>
+                        <option value="SAROJINI">Sarojini Hostel (2nd & 3rd Year Girls)</option>
+                        <option value="SARASWATI">Saraswati Hostel (2nd, 3rd & 4th Year Girls)</option>
+                      </optgroup>
                     </select>
                   </div>
                 )}
@@ -328,31 +386,40 @@ export default function LandingPage({ onSelectTab }) {
               {/* Simulation Result Box */}
               <div style={{
                 backgroundColor: '#ffffff',
-                border: '1px solid var(--border-subtle)',
+                border: '1.5px solid #cbd5e1',
                 borderRadius: 'var(--radius-md)',
-                padding: '16px',
+                padding: '20px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '10px'
+                gap: '12px',
+                boxShadow: 'var(--shadow-sm)'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                    Calculated Destination
+                  <span style={{ fontSize: '0.72rem', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span className="pulse-dot" style={{ backgroundColor: '#10b981' }}></span>
+                    Enforced Routing Target
                   </span>
-                  <code style={{ fontSize: '0.75rem', backgroundColor: 'var(--bg-subtle)', padding: '2px 8px', borderRadius: '4px' }}>
+                  <code style={{ fontSize: '0.75rem', backgroundColor: 'var(--bg-subtle)', padding: '3px 10px', borderRadius: '6px', fontWeight: '700', color: 'var(--primary-navy)', border: '1px solid #cbd5e1' }}>
                     {simResult.queue}
                   </code>
                 </div>
 
-                <div style={{ fontSize: '1.125rem', fontWeight: '800', color: 'var(--accent-teal)' }}>
+                <div style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--primary-navy)' }}>
                   {simResult.office}
                 </div>
 
-                <div style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
-                  <strong>Escalation Authority:</strong> {simResult.escalation}
+                <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <strong style={{ color: 'var(--primary-navy)' }}>Escalation Hierarchy:</strong> {simResult.escalation}
                 </div>
 
-                <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                <div style={{
+                  fontSize: '0.8125rem',
+                  color: 'var(--text-muted)',
+                  backgroundColor: 'var(--bg-subtle)',
+                  padding: '8px 12px',
+                  borderRadius: 'var(--radius-sm)',
+                  borderLeft: '3px solid var(--accent-blue)'
+                }}>
                   {simResult.privacy}
                 </div>
               </div>

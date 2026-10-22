@@ -100,14 +100,20 @@ public class DataInitializer implements CommandLineRunner {
         );
         departmentRepository.saveAll(departments);
 
-        // 2. Hostels
+        // 2. Hostels (Official KIET Allocation Rules)
         List<Hostel> hostels = List.of(
-                new Hostel("ARYABHATT", "Aryabhatt Hostel (First Year Boys)", "BOYS", "QUEUE_HOSTEL_ARYABHATT_RECTOR"),
-                new Hostel("CV_RAMAN", "C.V. Raman Hostel (Senior Boys)", "BOYS", "QUEUE_HOSTEL_CV_RAMAN_RECTOR"),
-                new Hostel("TAGORE", "Tagore Hostel (Boys)", "BOYS", "QUEUE_HOSTEL_TAGORE_RECTOR"),
-                new Hostel("SARASWATI", "Saraswati Hostel (Girls)", "GIRLS", "QUEUE_HOSTEL_SARASWATI_RECTOR"),
-                new Hostel("GARGI", "Gargi Hostel (Girls)", "GIRLS", "QUEUE_HOSTEL_GARGI_RECTOR"),
-                new Hostel("SAROJINI", "Sarojini Hostel (Girls)", "GIRLS", "QUEUE_HOSTEL_SAROJINI_RECTOR")
+                // Boys Hostels
+                new Hostel("CV_RAMAN", "C.V. Raman Hostel (1st Year Boys)", "BOYS", "QUEUE_HOSTEL_CV_RAMAN_RECTOR"),
+                new Hostel("CHANDRAGUPT", "Chandragupt Hostel (1st Year Boys)", "BOYS", "QUEUE_HOSTEL_CHANDRAGUPT_RECTOR"),
+                new Hostel("TAGORE", "Tagore Hostel (2nd Year Boys)", "BOYS", "QUEUE_HOSTEL_TAGORE_RECTOR"),
+                new Hostel("ARYABHATT", "Aryabhatt Hostel (2nd & 3rd Year Boys)", "BOYS", "QUEUE_HOSTEL_ARYABHATT_RECTOR"),
+                new Hostel("VIVEKANAND", "Vivekanand Hostel (2nd & 3rd Year Boys)", "BOYS", "QUEUE_HOSTEL_VIVEKANAND_RECTOR"),
+                new Hostel("CHANAKYA", "Chanakya Hostel (4th Year Boys)", "BOYS", "QUEUE_HOSTEL_CHANAKYA_RECTOR"),
+
+                // Girls Hostels
+                new Hostel("GARGI", "Gargi Hostel (1st Year Girls)", "GIRLS", "QUEUE_HOSTEL_GARGI_RECTOR"),
+                new Hostel("SAROJINI", "Sarojini Hostel (2nd & 3rd Year Girls)", "GIRLS", "QUEUE_HOSTEL_SAROJINI_RECTOR"),
+                new Hostel("SARASWATI", "Saraswati Hostel (2nd, 3rd & 4th Year Girls)", "GIRLS", "QUEUE_HOSTEL_SARASWATI_RECTOR")
         );
         hostelRepository.saveAll(hostels);
 
@@ -123,14 +129,33 @@ public class DataInitializer implements CommandLineRunner {
         // 4. Complaint Queues & Escalation Hierarchies
         List<ComplaintQueue> queues = List.of(
                 // Hostels Escalation Hierarchy: Hostel Warden -> Rector -> Chief Rector -> Central Admin
-                new ComplaintQueue("QUEUE_HOSTEL_ARYABHATT_WARDEN", "Aryabhatt Hostel Warden Queue", "HOSTEL_WARDEN", "ARYABHATT", "QUEUE_HOSTEL_ARYABHATT_RECTOR", 12, 48),
-                new ComplaintQueue("QUEUE_HOSTEL_ARYABHATT_RECTOR", "Aryabhatt Hostel Rector Queue", "RECTOR", "ARYABHATT", "QUEUE_CHIEF_RECTOR", 24, 72),
                 new ComplaintQueue("QUEUE_HOSTEL_CV_RAMAN_WARDEN", "C.V. Raman Hostel Warden Queue", "HOSTEL_WARDEN", "CV_RAMAN", "QUEUE_HOSTEL_CV_RAMAN_RECTOR", 12, 48),
                 new ComplaintQueue("QUEUE_HOSTEL_CV_RAMAN_RECTOR", "C.V. Raman Hostel Rector Queue", "RECTOR", "CV_RAMAN", "QUEUE_CHIEF_RECTOR", 24, 72),
+
+                new ComplaintQueue("QUEUE_HOSTEL_CHANDRAGUPT_WARDEN", "Chandragupt Hostel Warden Queue", "HOSTEL_WARDEN", "CHANDRAGUPT", "QUEUE_HOSTEL_CHANDRAGUPT_RECTOR", 12, 48),
+                new ComplaintQueue("QUEUE_HOSTEL_CHANDRAGUPT_RECTOR", "Chandragupt Hostel Rector Queue", "RECTOR", "CHANDRAGUPT", "QUEUE_CHIEF_RECTOR", 24, 72),
+
                 new ComplaintQueue("QUEUE_HOSTEL_TAGORE_WARDEN", "Tagore Hostel Warden Queue", "HOSTEL_WARDEN", "TAGORE", "QUEUE_HOSTEL_TAGORE_RECTOR", 12, 48),
                 new ComplaintQueue("QUEUE_HOSTEL_TAGORE_RECTOR", "Tagore Hostel Rector Queue", "RECTOR", "TAGORE", "QUEUE_CHIEF_RECTOR", 24, 72),
+
+                new ComplaintQueue("QUEUE_HOSTEL_ARYABHATT_WARDEN", "Aryabhatt Hostel Warden Queue", "HOSTEL_WARDEN", "ARYABHATT", "QUEUE_HOSTEL_ARYABHATT_RECTOR", 12, 48),
+                new ComplaintQueue("QUEUE_HOSTEL_ARYABHATT_RECTOR", "Aryabhatt Hostel Rector Queue", "RECTOR", "ARYABHATT", "QUEUE_CHIEF_RECTOR", 24, 72),
+
+                new ComplaintQueue("QUEUE_HOSTEL_VIVEKANAND_WARDEN", "Vivekanand Hostel Warden Queue", "HOSTEL_WARDEN", "VIVEKANAND", "QUEUE_HOSTEL_VIVEKANAND_RECTOR", 12, 48),
+                new ComplaintQueue("QUEUE_HOSTEL_VIVEKANAND_RECTOR", "Vivekanand Hostel Rector Queue", "RECTOR", "VIVEKANAND", "QUEUE_CHIEF_RECTOR", 24, 72),
+
+                new ComplaintQueue("QUEUE_HOSTEL_CHANAKYA_WARDEN", "Chanakya Hostel Warden Queue", "HOSTEL_WARDEN", "CHANAKYA", "QUEUE_HOSTEL_CHANAKYA_RECTOR", 12, 48),
+                new ComplaintQueue("QUEUE_HOSTEL_CHANAKYA_RECTOR", "Chanakya Hostel Rector Queue", "RECTOR", "CHANAKYA", "QUEUE_CHIEF_RECTOR", 24, 72),
+
+                new ComplaintQueue("QUEUE_HOSTEL_GARGI_WARDEN", "Gargi Hostel Warden Queue", "HOSTEL_WARDEN", "GARGI", "QUEUE_HOSTEL_GARGI_RECTOR", 12, 48),
+                new ComplaintQueue("QUEUE_HOSTEL_GARGI_RECTOR", "Gargi Hostel Rector Queue", "RECTOR", "GARGI", "QUEUE_CHIEF_RECTOR", 24, 72),
+
                 new ComplaintQueue("QUEUE_HOSTEL_SAROJINI_WARDEN", "Sarojini Hostel Warden Queue", "HOSTEL_WARDEN", "SAROJINI", "QUEUE_HOSTEL_SAROJINI_RECTOR", 12, 48),
                 new ComplaintQueue("QUEUE_HOSTEL_SAROJINI_RECTOR", "Sarojini Hostel Rector Queue", "RECTOR", "SAROJINI", "QUEUE_CHIEF_RECTOR", 24, 72),
+
+                new ComplaintQueue("QUEUE_HOSTEL_SARASWATI_WARDEN", "Saraswati Hostel Warden Queue", "HOSTEL_WARDEN", "SARASWATI", "QUEUE_HOSTEL_SARASWATI_RECTOR", 12, 48),
+                new ComplaintQueue("QUEUE_HOSTEL_SARASWATI_RECTOR", "Saraswati Hostel Rector Queue", "RECTOR", "SARASWATI", "QUEUE_CHIEF_RECTOR", 24, 72),
+
                 new ComplaintQueue("QUEUE_CHIEF_RECTOR", "Chief Rector Office Queue", "CHIEF_RECTOR", "ALL_HOSTELS", "QUEUE_CENTRAL_ADMIN", 24, 48),
 
                 // Scenario B Hierarchy: AIML Department Operator -> Central Admin
@@ -332,6 +357,49 @@ public class DataInitializer implements CommandLineRunner {
         eventRepository.save(new ComplaintEvent(c3.getId(), "ACKNOWLEDGED", itOp.getEmail(), itOp.getFullName(), "OPERATOR", "QUEUE_SERVICE_IT", "QUEUE_SERVICE_IT", "NOC ticket opened"));
         eventRepository.save(new ComplaintEvent(c3.getId(), "RESOLUTION_PROPOSED", itOp.getEmail(), itOp.getFullName(), "OPERATOR", "QUEUE_SERVICE_IT", "QUEUE_SERVICE_IT", "RADIUS authentication reset completed"));
 
+        // Scenario E: Srijan Shrivastava (Aryabhatt Room 105)
+        Complaint c4 = new Complaint();
+        c4.setTrackingNumber("CMP-2026-00104");
+        c4.setStudent(srijan);
+        c4.setTitle("Desk power socket sparking and loose contact in Room 105");
+        c4.setDescription("The primary desk outlet switch in Aryabhatt 105 is sparking whenever a laptop charger is connected. Needs socket plate replacement.");
+        c4.setCategory(ComplaintCategory.ELECTRICAL_PLUMBING);
+        c4.setLocationType(ComplaintLocationType.HOSTEL);
+        c4.setLocationDetail("Aryabhatt Hostel, 1st Floor, Room 105");
+        c4.setSpecificHostelCode("ARYABHATT");
+        c4.setStatus(ComplaintStatus.ACKNOWLEDGED);
+        c4.setUrgency(ComplaintUrgency.MEDIUM);
+        c4.setCurrentQueueCode("QUEUE_HOSTEL_ARYABHATT_WARDEN");
+        c4.setAssignedOperatorEmail(warden.getEmail());
+        c4.setAcknowledgedAt(Instant.now().minus(3, ChronoUnit.HOURS));
+        c4 = complaintRepository.save(c4);
+
+        eventRepository.save(new ComplaintEvent(c4.getId(), "SUBMITTED", srijan.getEmail(), srijan.getFullName(), "STUDENT", null, "QUEUE_HOSTEL_ARYABHATT_WARDEN", "Dispatched to Aryabhatt Hostel Warden Queue"));
+        eventRepository.save(new ComplaintEvent(c4.getId(), "ACKNOWLEDGED", warden.getEmail(), warden.getFullName(), "OPERATOR", "QUEUE_HOSTEL_ARYABHATT_WARDEN", "QUEUE_HOSTEL_ARYABHATT_WARDEN", "Warden acknowledged. Electrician work order assigned."));
+        noteRepository.save(new ComplaintNote(c4.getId(), warden, "Electrician slip #AR-415 assigned. Visit scheduled for 5:30 PM.", false));
+
+        // Scenario F: Ananya Singh (Sarojini Room 204)
+        Complaint c5 = new Complaint();
+        c5.setTrackingNumber("CMP-2026-00105");
+        c5.setStudent(ananya);
+        c5.setTitle("Hot water geyser thermostat tripping in Sarojini 2nd Floor Wing");
+        c5.setDescription("The common wing geyser on Sarojini 2nd Floor trips the main circuit breaker after 5 minutes of operation. Requires heating element and thermostat check.");
+        c5.setCategory(ComplaintCategory.HOSTEL_FACILITY);
+        c5.setLocationType(ComplaintLocationType.HOSTEL);
+        c5.setLocationDetail("Sarojini Hostel, 2nd Floor, Room 204 Corridor");
+        c5.setSpecificHostelCode("SAROJINI");
+        c5.setStatus(ComplaintStatus.IN_PROGRESS);
+        c5.setUrgency(ComplaintUrgency.HIGH);
+        c5.setCurrentQueueCode("QUEUE_HOSTEL_SAROJINI_WARDEN");
+        c5.setAssignedOperatorEmail(wardenSarojini.getEmail());
+        c5.setAcknowledgedAt(Instant.now().minus(5, ChronoUnit.HOURS));
+        c5 = complaintRepository.save(c5);
+
+        eventRepository.save(new ComplaintEvent(c5.getId(), "SUBMITTED", ananya.getEmail(), ananya.getFullName(), "STUDENT", null, "QUEUE_HOSTEL_SAROJINI_WARDEN", "Dispatched to Sarojini Hostel Warden Queue"));
+        eventRepository.save(new ComplaintEvent(c5.getId(), "ACKNOWLEDGED", wardenSarojini.getEmail(), wardenSarojini.getFullName(), "OPERATOR", "QUEUE_HOSTEL_SAROJINI_WARDEN", "QUEUE_HOSTEL_SAROJINI_WARDEN", "Hostel Warden verified issue with floor proctor"));
+        eventRepository.save(new ComplaintEvent(c5.getId(), "STATUS_CHANGE", wardenSarojini.getEmail(), wardenSarojini.getFullName(), "OPERATOR", "QUEUE_HOSTEL_SAROJINI_WARDEN", "QUEUE_HOSTEL_SAROJINI_WARDEN", "Plumbing & electrical team dispatched for thermostat replacement"));
+        noteRepository.save(new ComplaintNote(c5.getId(), wardenSarojini, "Technician dispatched to Sarojini 2nd floor bathroom block.", false));
+
         // 8. Scenario D: Shared Incident (Sanitized, no student PII)
         SharedIncident incident = new SharedIncident();
         incident.setIncidentNumber("INC-2026-0001");
@@ -426,7 +494,7 @@ public class DataInitializer implements CommandLineRunner {
                 "Search time complexity: Average O(log n), worst case O(n) in degenerate skewed trees. AVL Tree height balance property ensures O(log n) worst case."
         ));
 
-        log.info("Data initialization complete. Seeded 8 departments, 6 hostels, 19 complaint queues, 11 institutional accounts, 3 complaints, 1 incident, and 2 academic course guides.");
+        log.info("Data initialization complete. Seeded 8 departments, 9 hostels, 25 complaint queues, 11 institutional accounts, 5 complaints, 1 incident, and 2 academic course guides.");
     }
 
     private void seedOperatorKey(User user, String plaintextKey) {
