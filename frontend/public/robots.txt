@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /how-it-works
+Allow: /faq
+Allow: /privacy
+Allow: /shared-incidents
+Allow: /academics
+
+# Authenticated student, operator, and administrative workspaces excluded from indexation
+Disallow: /api/
+Disallow: /operator/
+Disallow: /admin/
+Disallow: /student/
+
+Sitemap: https://campussetu.kiet.edu/sitemap.xml
