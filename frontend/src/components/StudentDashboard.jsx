@@ -45,7 +45,7 @@ export const isGirlStudent = (user) => {
   return email.startsWith('ananya') || name.includes('ananya');
 };
 
-export default function StudentDashboard({ currentUser, externalSosOpen, onResetExternalSos }) {
+export default function StudentDashboard({ currentUser }) {
   const [activeTab, setActiveTab] = useState('my-complaints'); // 'my-complaints', 'submit', 'shared-incidents', 'academics'
   const [complaints, setComplaints] = useState([]);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
@@ -110,15 +110,6 @@ export default function StudentDashboard({ currentUser, externalSosOpen, onReset
   const [sosLoading, setSosLoading] = useState(false);
   const [sosError, setSosError] = useState('');
   const [sosSuccessResult, setSosSuccessResult] = useState(null);
-
-  useEffect(() => {
-    if (externalSosOpen && isGirlStudent(currentUser)) {
-      setShowSosModal(true);
-      if (onResetExternalSos) onResetExternalSos();
-    } else if (externalSosOpen) {
-      if (onResetExternalSos) onResetExternalSos();
-    }
-  }, [externalSosOpen, onResetExternalSos, currentUser]);
 
   const handleDispatchSos = async (locationOverride, descOverride) => {
     if (!isGirlStudent(currentUser)) {
@@ -484,13 +475,6 @@ export default function StudentDashboard({ currentUser, externalSosOpen, onReset
               <PlusCircle size={16} />
               Lodge Grievance
             </button>
-            <button
-              onClick={() => setActiveTab('academics')}
-              className="btn btn-navy"
-            >
-              <Bot size={16} color="#f8b81f" />
-              AI Study Assistant
-            </button>
           </div>
         </div>
 
@@ -642,27 +626,6 @@ export default function StudentDashboard({ currentUser, externalSosOpen, onReset
             <Sparkles size={14} color="#f8b81f" />
             AI Study Assistant & Notes
           </button>
-          {isGirlStudent(currentUser) && (
-            <button
-              onClick={() => setShowSosModal(true)}
-              className="btn btn-sm card-interactive"
-              style={{
-                marginLeft: 'auto',
-                backgroundColor: '#dc2626',
-                color: '#ffffff',
-                border: 'none',
-                fontWeight: '800',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                padding: '6px 14px',
-                boxShadow: '0 0 10px rgba(220, 38, 38, 0.4)'
-              }}
-            >
-              <span className="pulse-dot" style={{ backgroundColor: '#ffffff', width: '7px', height: '7px' }}></span>
-              <span>🚨 Instant SOS to Dean SW</span>
-            </button>
-          )}
         </div>
 
         {/* TAB 1: SUBMIT COMPLAINT FORM */}
@@ -1186,299 +1149,65 @@ export default function StudentDashboard({ currentUser, externalSosOpen, onReset
             ) : (
               /* Campus Intelligence & Safety Operations Hub (Fills right column when no ticket is selected) */
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0 }}>
-                {isGirlStudent(currentUser) ? (
-                  /* 1. WOMEN'S SAFETY & ANTI-HARASSMENT PRIORITY SOS CARD (Strictly for Female Students) */
-                  <div
-                    className="card card-interactive"
-                    style={{
-                      padding: '24px',
-                      border: '2px solid #f87171',
-                      background: 'linear-gradient(145deg, #fff5f5 0%, #fee2e2 60%, #fecaca 100%)',
-                      boxShadow: '0 8px 24px rgba(220, 38, 38, 0.12)',
-                      position: 'relative',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    <div style={{
-                      position: 'absolute',
-                      top: '-15px',
-                      right: '-15px',
-                      width: '90px',
-                      height: '90px',
-                      borderRadius: '50%',
-                      backgroundColor: 'rgba(220, 38, 38, 0.08)',
-                      pointerEvents: 'none'
-                    }} />
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className="pulse-dot" style={{ backgroundColor: '#dc2626', width: '10px', height: '10px' }}></span>
-                        <h3 style={{ fontSize: '1.15rem', fontWeight: '800', color: '#991b1b', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <ShieldAlert size={20} color="#dc2626" />
-                          Women's Safety & Anti-Harassment Priority SOS
-                        </h3>
+                {/* 1. STUDENT WORKSPACE OVERVIEW CARD */}
+                <div
+                  className="card"
+                  style={{
+                    padding: '22px 24px',
+                    border: '1px solid var(--border-subtle)',
+                    background: 'linear-gradient(135deg, #ffffff 0%, var(--bg-subtle) 100%)',
+                    boxShadow: 'var(--shadow-sm)'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                    <div>
+                      <div style={{ fontSize: '0.72rem', fontWeight: '800', color: 'var(--kiet-crimson)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Institutional Grievance Governance
                       </div>
-                      <span className="badge" style={{ backgroundColor: '#dc2626', color: '#ffffff', fontWeight: '800', fontSize: '0.7rem', padding: '3px 8px' }}>
-                        DIRECT TO DEAN SW
-                      </span>
+                      <h3 style={{ fontSize: '1.15rem', fontWeight: '800', color: 'var(--primary-navy)', margin: '4px 0 0' }}>
+                        Ticket Tracking & Verification Desk
+                      </h3>
                     </div>
+                    <span className="badge badge-submitted" style={{ fontSize: '0.72rem' }}>
+                      {complaints.length} Total Registered
+                    </span>
+                  </div>
 
-                    <p style={{ fontSize: '0.84rem', color: '#7f1d1d', lineHeight: 1.45, marginBottom: '14px' }}>
-                      For female students facing harassment, eve-teasing, ragging, or distress anywhere on campus. This alert triggers an <strong>immediate CRITICAL dispatch directly to Prof. Dean Student Welfare (Dean SW) & ICC</strong>, bypassing intermediate hostel or department queues.
-                    </p>
+                  <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: '0 0 16px' }}>
+                    Select any complaint from your history on the left to inspect its live status, event lifecycle logs, assigned operator details, and resolution attachments.
+                  </p>
 
-                    {/* Fast Location Preset Chips */}
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ fontSize: '0.72rem', fontWeight: '700', color: '#991b1b', textTransform: 'uppercase', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <MapPin size={12} />
-                        Tap Your Current Campus Location:
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '14px' }}>
+                    <div style={{ backgroundColor: '#ffffff', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+                      <div style={{ fontSize: '1.15rem', fontWeight: '800', color: 'var(--primary-navy)' }}>
+                        {complaints.filter(c => ['SUBMITTED', 'ACKNOWLEDGED', 'ASSIGNED', 'IN_PROGRESS'].includes(c.status)).length}
                       </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                        {[
-                          'Academic Block A / Library Corridor',
-                          'Sarojini / Gargi Girls Hostel Lawn',
-                          'Central Canteen & Cafeteria Ground',
-                          'Sports Complex & Auditorium Pathway',
-                          'KIET Main Entrance Gate',
-                          'Aryabhatt / Vivekanand Quadrangle'
-                        ].map((loc) => (
-                          <button
-                            key={loc}
-                            type="button"
-                            onClick={() => setSosLocation(loc)}
-                            style={{
-                              padding: '5px 11px',
-                              fontSize: '0.73rem',
-                              borderRadius: 'var(--radius-full)',
-                              border: sosLocation === loc ? '1.5px solid #dc2626' : '1px solid #fca5a5',
-                              backgroundColor: sosLocation === loc ? '#dc2626' : '#ffffff',
-                              color: sosLocation === loc ? '#ffffff' : '#991b1b',
-                              cursor: 'pointer',
-                              fontWeight: sosLocation === loc ? '700' : '600',
-                              transition: 'all 0.12s ease'
-                            }}
-                          >
-                            📍 {loc}
-                          </button>
-                        ))}
-                      </div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: '600' }}>In Progress</div>
                     </div>
-
-                    {/* Location Input & SOS Dispatch Button */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <div>
-                        <input
-                          type="text"
-                          value={sosLocation}
-                          onChange={(e) => setSosLocation(e.target.value)}
-                          placeholder="Or type exact location (e.g., Near staircase 2nd floor, B-block parking)..."
-                          className="form-input"
-                          style={{
-                            backgroundColor: '#ffffff',
-                            borderColor: '#fca5a5',
-                            fontSize: '0.85rem',
-                            padding: '10px 12px',
-                            color: '#1e293b'
-                          }}
-                        />
+                    <div style={{ backgroundColor: '#fffbeb', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid #fde68a', textAlign: 'center' }}>
+                      <div style={{ fontSize: '1.15rem', fontWeight: '800', color: '#b45309' }}>
+                        {complaints.filter(c => c.status === 'RESOLUTION_PROPOSED').length}
                       </div>
-
-                      <input
-                        type="text"
-                        value={sosDescription}
-                        onChange={(e) => setSosDescription(e.target.value)}
-                        placeholder="Optional brief note (e.g. need security assistance immediately)..."
-                        className="form-input"
-                        style={{
-                          backgroundColor: '#ffffff',
-                          borderColor: '#fca5a5',
-                          fontSize: '0.8125rem',
-                          padding: '8px 12px',
-                          color: '#1e293b'
-                        }}
-                      />
-
-                      {sosError && (
-                        <div style={{ color: '#dc2626', fontSize: '0.75rem', fontWeight: '700' }}>
-                          ⚠️ {sosError}
-                        </div>
-                      )}
-
-                      <button
-                        type="button"
-                        disabled={sosLoading}
-                        onClick={() => handleDispatchSos()}
-                        className="btn card-interactive"
-                        style={{
-                          backgroundColor: '#dc2626',
-                          color: '#ffffff',
-                          border: 'none',
-                          fontWeight: '800',
-                          fontSize: '0.92rem',
-                          padding: '12px 18px',
-                          borderRadius: 'var(--radius-md)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '8px',
-                          cursor: 'pointer',
-                          boxShadow: '0 4px 14px rgba(220, 38, 38, 0.45)',
-                          marginTop: '2px'
-                        }}
-                      >
-                        <span className="pulse-dot" style={{ backgroundColor: '#ffffff', width: '8px', height: '8px' }}></span>
-                        <span>{sosLoading ? '🚨 Dispatching to Dean SW...' : '🚨 DISPATCH EMERGENCY SOS TO DEAN SW'}</span>
-                      </button>
+                      <div style={{ fontSize: '0.7rem', color: '#92400e', fontWeight: '600' }}>Pending Verify</div>
                     </div>
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', fontSize: '0.72rem', color: '#991b1b', borderTop: '1px solid #fecaca', paddingTop: '8px' }}>
-                      <span>🛡️ Strict Student Privacy & Confidentiality</span>
-                      <span>1-Hour Immediate Dean SW Response SLA</span>
+                    <div style={{ backgroundColor: '#f0fdf4', padding: '10px', borderRadius: 'var(--radius-md)', border: '1px solid #bbf7d0', textAlign: 'center' }}>
+                      <div style={{ fontSize: '1.15rem', fontWeight: '800', color: '#15803d' }}>
+                        {complaints.filter(c => c.status === 'CLOSED').length}
+                      </div>
+                      <div style={{ fontSize: '0.7rem', color: '#166534', fontWeight: '600' }}>Resolved</div>
                     </div>
                   </div>
-                ) : (
-                  /* 1. CAMPUS FACILITY & RAPID MAINTENANCE DESK (For Male Students / General Facilities) */
-                  <div
-                    className="card card-interactive"
-                    style={{
-                      padding: '24px',
-                      border: '1.5px solid #0284c7',
-                      background: 'linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 60%, #bae6fd 100%)',
-                      boxShadow: '0 8px 24px rgba(2, 132, 199, 0.12)',
-                      position: 'relative',
-                      overflow: 'hidden'
-                    }}
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('submit')}
+                    className="btn btn-primary"
+                    style={{ width: '100%', fontSize: '0.84rem', fontWeight: '700', padding: '9px', justifyContent: 'center' }}
                   >
-                    <div style={{
-                      position: 'absolute',
-                      top: '-15px',
-                      right: '-15px',
-                      width: '90px',
-                      height: '90px',
-                      borderRadius: '50%',
-                      backgroundColor: 'rgba(2, 132, 199, 0.08)',
-                      pointerEvents: 'none'
-                    }} />
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className="pulse-dot" style={{ backgroundColor: '#0284c7', width: '10px', height: '10px' }}></span>
-                        <h3 style={{ fontSize: '1.15rem', fontWeight: '800', color: '#0369a1', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                          <Building size={20} color="#0284c7" />
-                          Hostel & Campus Facility Rapid Desk
-                        </h3>
-                      </div>
-                      <span className="badge" style={{ backgroundColor: '#0284c7', color: '#ffffff', fontWeight: '800', fontSize: '0.7rem', padding: '3px 8px' }}>
-                        FAST REPAIR DISPATCH
-                      </span>
-                    </div>
-
-                    <p style={{ fontSize: '0.84rem', color: '#075985', lineHeight: 1.45, marginBottom: '14px' }}>
-                      Quickly lodge routine room, hostel, or department maintenance issues with 1-click verified KIET routing rules. Pre-populates the grievance form and routes directly to your hostel caretaker and facility maintenance team.
-                    </p>
-
-                    {/* Maintenance Preset Quick Chips */}
-                    <div style={{ marginBottom: '14px' }}>
-                      <div style={{ fontSize: '0.72rem', fontWeight: '700', color: '#0369a1', textTransform: 'uppercase', marginBottom: '8px' }}>
-                        ⚡ 1-Click Fast-Fill Maintenance Presets:
-                      </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        {[
-                          {
-                            label: '⚡ Fan Speed Regulator Defective',
-                            title: 'Fan speed regulator burnt out; sparking intermittently',
-                            category: 'HOSTEL_FACILITY',
-                            desc: 'Ceiling fan speed regulator in room is sparking and knob is jammed. Requires replacement by hostel electrician.'
-                          },
-                          {
-                            label: '💡 Room Tube Light / LED Batten Failed',
-                            title: 'Room tube light / LED batten not illuminating',
-                            category: 'HOSTEL_FACILITY',
-                            desc: 'Primary ceiling LED batten has failed. Night study illumination unavailable. Requesting replacement.'
-                          },
-                          {
-                            label: '📶 Hostel Wi-Fi Access Point Dropping',
-                            title: 'Hostel Wi-Fi router packet loss & captive portal loop',
-                            category: 'IT_AND_NETWORK',
-                            desc: 'Wing Wi-Fi access point intermittently dropping connections and captive portal authentication timing out.'
-                          },
-                          {
-                            label: '🚿 Bathroom Geyser Heating Inactive',
-                            title: 'Floor washroom geyser water heating coil inactive',
-                            category: 'HOSTEL_FACILITY',
-                            desc: 'Washroom geyser is not providing hot water; indicator lamp is off.'
-                          },
-                          {
-                            label: '🍽️ Mess Meal & Hygiene Review',
-                            title: 'Hostel mess hygiene and food preparation review',
-                            category: 'MESS_AND_DINING',
-                            desc: 'Mess meal feedback regarding hygiene standards and timely service during dining hours.'
-                          },
-                          {
-                            label: '🚰 RO Water Dispenser Service',
-                            title: 'Floor RO drinking water dispenser flow rate low',
-                            category: 'HOSTEL_FACILITY',
-                            desc: 'Drinking water dispenser cooling and filtration rate is low; requires routine cartridge service.'
-                          }
-                        ].map((preset) => (
-                          <button
-                            key={preset.label}
-                            type="button"
-                            onClick={() => {
-                              setFormData({
-                                ...formData,
-                                title: preset.title,
-                                category: preset.category,
-                                locationType: 'HOSTEL',
-                                specificHostelCode: currentUser?.hostelCode || 'ARYABHATT',
-                                description: preset.desc
-                              });
-                              setActiveTab('submit');
-                            }}
-                            style={{
-                              padding: '6px 12px',
-                              fontSize: '0.75rem',
-                              borderRadius: 'var(--radius-full)',
-                              border: '1px solid #7dd3fc',
-                              backgroundColor: '#ffffff',
-                              color: '#0369a1',
-                              cursor: 'pointer',
-                              fontWeight: '600',
-                              boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                              transition: 'all 0.12s ease'
-                            }}
-                          >
-                            {preset.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setActiveTab('submit')}
-                      className="btn btn-primary"
-                      style={{
-                        width: '100%',
-                        padding: '12px',
-                        fontWeight: '800',
-                        fontSize: '0.9rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px'
-                      }}
-                    >
-                      <PlusCircle size={16} />
-                      Lodge Custom Campus Grievance
-                    </button>
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px', fontSize: '0.72rem', color: '#0369a1', borderTop: '1px solid #bae6fd', paddingTop: '8px' }}>
-                      <span>🛠️ Assigned Hostel: <strong>{currentUser?.hostelCode || 'Hostel'}</strong></span>
-                      <span>24-Hour Routine Resolution SLA</span>
-                    </div>
-                  </div>
-                )}
+                    <PlusCircle size={15} />
+                    Lodge New Grievance
+                  </button>
+                </div>
 
                 {/* 2. ACTION REQUIRED: RESOLUTION INSPECTION CARD */}
                 {complaints.some(c => c.status === 'RESOLUTION_PROPOSED') && (

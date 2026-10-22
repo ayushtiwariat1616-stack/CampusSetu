@@ -11,18 +11,7 @@ import {
 } from 'lucide-react';
 import { api } from '../api';
 
-const isGirlStudent = (user) => {
-  if (!user || user.role !== 'STUDENT') return false;
-  if (user.isFemaleStudent) return true;
-  if (user.gender === 'FEMALE') return true;
-  const hc = (user.hostelCode || '').toUpperCase();
-  if (['GARGI', 'SAROJINI', 'SARASWATI'].includes(hc)) return true;
-  const email = (user.email || '').toLowerCase();
-  const name = (user.fullName || '').toLowerCase();
-  return email.startsWith('ananya') || name.includes('ananya');
-};
-
-export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout, onOpenSos }) {
+export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifs, setShowNotifs] = useState(false);
@@ -157,34 +146,6 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout, 
 
           {/* User / Auth Area */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {/* Emergency SOS Button - Strictly restricted to female / girl students */}
-            {onOpenSos && isGirlStudent(currentUser) && (
-              <button
-                type="button"
-                onClick={onOpenSos}
-                style={{
-                  backgroundColor: '#dc2626',
-                  color: '#ffffff',
-                  border: 'none',
-                  borderRadius: 'var(--radius-full)',
-                  padding: '6px 14px',
-                  fontSize: '0.8125rem',
-                  fontWeight: '800',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  boxShadow: '0 0 12px rgba(220, 38, 38, 0.45)',
-                  cursor: 'pointer',
-                  letterSpacing: '0.01em',
-                  transition: 'all 0.15s ease'
-                }}
-                className="card-interactive"
-                title="Immediate SOS: Women's Safety & Anti-Harassment (Direct to Dean SW)"
-              >
-                <span className="pulse-dot" style={{ backgroundColor: '#ffffff', width: '8px', height: '8px' }}></span>
-                <span>🚨 SOS</span>
-              </button>
-            )}
 
             {currentUser ? (
               <>

@@ -8,22 +8,14 @@ import LoginPage from './components/LoginPage';
 import StudentDashboard from './components/StudentDashboard';
 import OperatorDashboard from './components/OperatorDashboard';
 import AdminDashboard from './components/AdminDashboard';
+import OpeningSplash from './components/OpeningSplash';
 import { api } from './api';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [activeTab, setActiveTab] = useState('landing');
   const [loading, setLoading] = useState(true);
-  const [externalSosOpen, setExternalSosOpen] = useState(false);
-
-  const handleOpenSos = () => {
-    if (currentUser?.role === 'STUDENT') {
-      setActiveTab('student-dashboard');
-      setExternalSosOpen(true);
-    } else {
-      setActiveTab('login');
-    }
-  };
+  const [showSplash, setShowSplash] = useState(true);
 
   const checkCurrentUser = useCallback(async () => {
     try {
@@ -120,13 +112,17 @@ export default function App() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Opening Intro Animation */}
+      {showSplash && (
+        <OpeningSplash onFinish={() => setShowSplash(false)} />
+      )}
+
       {/* Main Navbar */}
       <Navbar
         currentUser={currentUser}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         onLogout={handleLogout}
-        onOpenSos={handleOpenSos}
       />
 
       {/* Main Page Content */}
@@ -155,8 +151,6 @@ export default function App() {
         {activeTab === 'student-dashboard' && (
           <StudentDashboard
             currentUser={currentUser}
-            externalSosOpen={externalSosOpen}
-            onResetExternalSos={() => setExternalSosOpen(false)}
           />
         )}
 
