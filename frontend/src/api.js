@@ -1,7 +1,10 @@
-// CampusSetu API Client with relative /api proxy integration
+// CampusSetu API Client with dynamic environment URL and relative proxy fallback
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
 async function request(url, options = {}) {
+  const targetUrl = url.startsWith('http') ? url : `${API_BASE}${url}`;
   const config = {
+    credentials: 'include',
     headers: {
       'Accept': 'application/json',
       ...(!options.isFormData && { 'Content-Type': 'application/json' }),
@@ -14,7 +17,7 @@ async function request(url, options = {}) {
     delete config.headers['Content-Type'];
   }
 
-  const res = await fetch(url, config);
+  const res = await fetch(targetUrl, config);
   const data = await res.json().catch(() => null);
 
   if (!res.ok) {

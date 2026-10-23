@@ -1,0 +1,34 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: campussetu-backend
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - SERVER_PORT=8081
+      - SPRING_PROFILES_ACTIVE=dev
+      - CAMPUSSETU_GROQ_API_KEY=${CAMPUSSETU_GROQ_API_KEY:-}
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+    volumes:
+      - campussetu-data:/app/data
+      - campussetu-attachments:/app/storage/attachments
+      - campussetu-academics:/app/storage/academics
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: campussetu-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  campussetu-data:
+  campussetu-attachments:
+  campussetu-academics:
