@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,6 +46,9 @@ public class AcademicService {
 
     @Value("${campussetu.groq.api-key:${GROQ_API_KEY:}}")
     private String configuredGroqApiKey;
+
+    @Value("${campussetu.groq.default-model:qwen/qwen3.8-27b}")
+    private String defaultGroqModel;
 
     public AcademicService(AcademicDocumentRepository documentRepository,
                            AcademicDocumentPageRepository pageRepository,
@@ -281,26 +285,36 @@ public class AcademicService {
             citations.add(new Citation(res.documentId(), res.documentTitle(), res.subjectCode(), res.pageNumber(), res.snippet()));
         }
 
-        // Determine active Groq API Key
-        String activeKey = (customGroqApiKey != null && !customGroqApiKey.isBlank())
-                ? customGroqApiKey.trim()
-                : (configuredGroqApiKey != null && !configuredGroqApiKey.isBlank() ? configuredGroqApiKey.trim() : null);
-
-        String activeModel = (model != null && !model.isBlank()) ? model.trim() : "llama-3.3-70b-versatile";
+        // Determine active Groq API Key (Universal Groq AI key for all students)
+        String activeKey = resolveGroqApiKey(customGroqApiKey);
 
         if (activeKey != null && !activeKey.startsWith("mock")) {
-            try {
-                String aiAnswer = callGroqLlama(activeKey, activeModel, question, documentContext, docTitleForPrompt);
-                return new AcademicQAResponse(
-                        aiAnswer,
-                        citations,
-                        true,
-                        !citations.isEmpty(),
-                        true,
-                        "Groq AI (" + activeModel + ")"
-                );
-            } catch (Exception ex) {
-                log.warn("Groq API call encountered an issue: {}", ex.getMessage());
+            List<String> candidateModels = new ArrayList<>();
+            if (model != null && !model.isBlank()) {
+                candidateModels.add(model.trim());
+            }
+            if (defaultGroqModel != null && !defaultGroqModel.isBlank() && !candidateModels.contains(defaultGroqModel.trim())) {
+                candidateModels.add(defaultGroqModel.trim());
+            }
+            if (!candidateModels.contains("qwen/qwen3.8-27b")) candidateModels.add("qwen/qwen3.8-27b");
+            if (!candidateModels.contains("openai/gpt-oss-120b")) candidateModels.add("openai/gpt-oss-120b");
+
+            for (String candidate : candidateModels) {
+                try {
+                    String aiAnswer = callGroqLlama(activeKey, candidate, question, documentContext, docTitleForPrompt);
+                    if (aiAnswer != null && !aiAnswer.isBlank()) {
+                        return new AcademicQAResponse(
+                                aiAnswer,
+                                citations,
+                                true,
+                                !citations.isEmpty(),
+                                true,
+                                "Groq AI (" + candidate + ")"
+                        );
+                    }
+                } catch (Exception ex) {
+                    log.warn("Groq API call with model '{}' encountered an issue: {}", candidate, ex.getMessage());
+                }
             }
         }
 
@@ -317,15 +331,15 @@ public class AcademicService {
     }
 
     /**
-     * Call Groq AI API with Llama 3 model.
+     * Call Groq AI API with robust model execution and message content extraction.
      */
     private String callGroqLlama(String apiKey, String modelName, String question, String context, String docTitle) throws Exception {
         HttpClient client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(12))
                 .build();
 
-        String systemPrompt = "You are KIET CampusSetu's AI Academic & Research Assistant powered by Groq Llama 3. " +
-                "You assist students with engineering and academic materials, lecture notes, and syllabus inquiries at KIET Group of Institutions. " +
+        String systemPrompt = "You are KIET CampusSetu's AI Academic & Research Assistant powered by Groq. " +
+                "You assist students with engineering and academic materials, lecture notes, syllabus inquiries, and practical derivations at KIET Group of Institutions. " +
                 "Ground your answer in the provided document context whenever possible, explain step-by-step with formulas or code where applicable, " +
                 "and cite page numbers accurately.";
 
@@ -359,7 +373,14 @@ public class AcademicService {
             JsonNode root = objectMapper.readTree(response.body());
             JsonNode choices = root.path("choices");
             if (choices.isArray() && choices.size() > 0) {
-                return choices.get(0).path("message").path("content").asText();
+                JsonNode messageNode = choices.get(0).path("message");
+                String content = messageNode.path("content").asText("");
+                if (content.isBlank() && messageNode.has("reasoning")) {
+                    content = messageNode.path("reasoning").asText("");
+                }
+                if (!content.isBlank()) {
+                    return content;
+                }
             }
         }
 
@@ -373,17 +394,13 @@ public class AcademicService {
     private String generateSynthesizedAnswer(String question, List<Citation> citations, String docTitle, boolean keyAttempted) {
         if (citations.isEmpty()) {
             return "### 📚 Curriculum Assistant Notice\n\n" +
-                    "AI-assisted generative answering is currently unavailable for this question as no matching excerpts were found in your currently cataloged course notes.\n\n" +
+                    "Curriculum references for this specific question were not located in the uploaded course notes.\n\n" +
                     "- **Tip 1**: Try broader keywords (e.g., 'BFS', 'Search', 'Stack', 'Tree', 'Evaluation').\n" +
-                    "- **Tip 2**: You can upload your own course PDF or assignment sheet directly using the **'Upload PDF'** button above!\n" +
-                    "- **Tip 3**: Connect your free Groq API key in the top settings box to enable open-domain Llama 3 answers.";
+                    "- **Tip 2**: You can upload your own course PDF or assignment sheet directly using the **'Upload PDF'** button above!";
         }
 
         Citation top = citations.get(0);
         StringBuilder sb = new StringBuilder();
-        if (!keyAttempted) {
-            sb.append("*(AI-assisted generative answering is currently unavailable as no Groq key was supplied; grounded curriculum excerpts are synthesized below.)*\n\n");
-        }
         sb.append("### 🧠 AI Concept Summary\n\n");
         sb.append("Based on **").append(top.documentTitle()).append("** (**Page ").append(top.pageNumber()).append("**):\n\n");
         sb.append("> \"").append(top.snippet().trim()).append("\"\n\n");
@@ -402,8 +419,6 @@ public class AcademicService {
             sb.append("\n");
         }
 
-        sb.append("*(⚡ Tip: You can paste your free Groq API key above to activate live **Llama 3.3 70B** for full conversational code generation and deep step-by-step problem derivations!)*");
-
         return sb.toString();
     }
 
@@ -418,6 +433,35 @@ public class AcademicService {
         String prefix = start > 0 ? "..." : "";
         String suffix = end < text.length() ? "..." : "";
         return prefix + text.substring(start, end).trim() + suffix;
+    }
+
+    private String resolveGroqApiKey(String customGroqApiKey) {
+        if (customGroqApiKey != null && !customGroqApiKey.isBlank()) {
+            return customGroqApiKey.trim();
+        }
+        if (configuredGroqApiKey != null && !configuredGroqApiKey.isBlank()) {
+            return configuredGroqApiKey.trim();
+        }
+        String envKey = System.getenv("CAMPUSSETU_GROQ_API_KEY");
+        if (envKey == null || envKey.isBlank()) {
+            envKey = System.getenv("GROQ_API_KEY");
+        }
+        if (envKey != null && !envKey.isBlank()) {
+            return envKey.trim();
+        }
+        // Check local gitignored runtime key file
+        for (String candidatePath : List.of("./data/groq_api.key", "backend/data/groq_api.key", "../backend/data/groq_api.key")) {
+            Path p = Paths.get(candidatePath);
+            if (Files.isRegularFile(p)) {
+                try {
+                    String content = Files.readString(p).trim();
+                    if (!content.isBlank()) {
+                        return content;
+                    }
+                } catch (Exception ignored) {}
+            }
+        }
+        return null;
     }
 
     private Set<String> getAuthorizedDepartmentsForUser(SessionUser user) {

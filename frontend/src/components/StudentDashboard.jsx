@@ -19,11 +19,9 @@ import {
   UploadCloud,
   FileUp,
   Bot,
-  Key,
   Copy,
   CheckCheck,
   Trash2,
-  ExternalLink,
   FileText,
   ShieldAlert,
   PhoneCall,
@@ -79,16 +77,12 @@ export default function StudentDashboard({ currentUser }) {
   const [incidents, setIncidents] = useState([]);
   const [subscribedIncidents, setSubscribedIncidents] = useState(new Set());
 
-  // Academic Hub & Groq Llama 3 AI State
+  // Academic Hub & Universal Groq AI State (Server-managed universal key for all students)
   const [acadDocs, setAcadDocs] = useState([]);
   const [acadSemester, setAcadSemester] = useState(2); // Defaults to Semester 2
   const [qaQuestion, setQaQuestion] = useState('');
   const [qaResponse, setQaResponse] = useState(null);
   const [qaLoading, setQaLoading] = useState(false);
-  const [groqApiKey, setGroqApiKey] = useState(() => localStorage.getItem('campussetu_groq_key') || '');
-  const [groqModel, setGroqModel] = useState('llama-3.3-70b-versatile');
-  const [showAiSettings, setShowAiSettings] = useState(false);
-  const [keySavedToast, setKeySavedToast] = useState(false);
   const [selectedDocFilter, setSelectedDocFilter] = useState('');
   const [copiedResponse, setCopiedResponse] = useState(false);
 
@@ -335,13 +329,6 @@ export default function StudentDashboard({ currentUser }) {
     }
   };
 
-  const handleSaveGroqKey = (key) => {
-    setGroqApiKey(key);
-    localStorage.setItem('campussetu_groq_key', key.trim());
-    setKeySavedToast(true);
-    setTimeout(() => setKeySavedToast(false), 2000);
-  };
-
   const handleAskQuestion = async (e) => {
     if (e) e.preventDefault();
     if (!qaQuestion.trim()) return;
@@ -354,9 +341,9 @@ export default function StudentDashboard({ currentUser }) {
       const docId = selectedDocFilter ? Number(selectedDocFilter) : null;
       const res = await api.askAcademicQuestion(
         qaQuestion.trim(),
-        groqApiKey.trim() || null,
+        null,
         docId,
-        groqModel
+        'qwen/qwen3.8-27b'
       );
       if (res?.data) {
         setQaResponse(res.data);
@@ -1427,7 +1414,24 @@ export default function StudentDashboard({ currentUser }) {
                 </p>
               </div>
 
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 14px',
+                  backgroundColor: '#f0fdf4',
+                  border: '1px solid #86efac',
+                  borderRadius: 'var(--radius-full)',
+                  color: '#15803d',
+                  fontSize: '0.8125rem',
+                  fontWeight: '700',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
+                }}>
+                  <Sparkles size={14} color="#15803d" />
+                  <span>Groq AI Active for All Students</span>
+                </div>
+
                 <button
                   onClick={() => setShowUploadModal(true)}
                   className="btn btn-primary btn-sm"
@@ -1436,84 +1440,8 @@ export default function StudentDashboard({ currentUser }) {
                   <FileUp size={14} />
                   Upload Your PDF
                 </button>
-                <button
-                  onClick={() => setShowAiSettings(!showAiSettings)}
-                  className="btn btn-outline btn-sm"
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <Key size={14} />
-                  {groqApiKey ? 'Groq Key (Configured)' : 'Configure Groq AI'}
-                </button>
               </div>
             </div>
-
-            {/* Collapsible Groq AI Configuration Panel */}
-            {showAiSettings && (
-              <div className="card" style={{
-                marginBottom: '20px',
-                backgroundColor: '#fffdf0',
-                border: '1px solid #f8b81f',
-                padding: '18px'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '800', color: '#0b2545', fontSize: '0.9375rem' }}>
-                    <Bot size={18} color="#f8b81f" />
-                    Groq AI & Llama 3 Engine Settings
-                  </div>
-                  <button onClick={() => setShowAiSettings(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}>
-                    <X size={16} />
-                  </button>
-                </div>
-                <p style={{ fontSize: '0.8125rem', color: '#475569', marginBottom: '12px' }}>
-                  Groq provides ultra-fast inference for Meta Llama 3 models. You can use our built-in academic synthesizer out of the box, or paste your free Groq API key below to activate live LLM reasoning.
-                </p>
-
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                  <div style={{ flex: 1, minWidth: '220px' }}>
-                    <label className="form-label" style={{ fontSize: '0.75rem' }}>
-                      Groq API Key (Stored securely in browser localStorage)
-                    </label>
-                    <input
-                      type="password"
-                      placeholder="gsk_..."
-                      className="form-input"
-                      style={{ fontSize: '0.875rem' }}
-                      value={groqApiKey}
-                      onChange={(e) => handleSaveGroqKey(e.target.value)}
-                    />
-                  </div>
-                  <div style={{ minWidth: '180px' }}>
-                    <label className="form-label" style={{ fontSize: '0.75rem' }}>Model Architecture</label>
-                    <select
-                      className="form-select"
-                      style={{ fontSize: '0.875rem' }}
-                      value={groqModel}
-                      onChange={(e) => setGroqModel(e.target.value)}
-                    >
-                      <option value="llama-3.3-70b-versatile">Llama 3.3 70B Versatile (Recommended)</option>
-                      <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant (Ultra Fast)</option>
-                      <option value="llama3-70b-8192">Llama 3 70B</option>
-                    </select>
-                  </div>
-                  <a
-                    href="https://console.groq.com/keys"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-outline btn-sm"
-                    style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '4px' }}
-                  >
-                    <span>Get Free Groq Key</span>
-                    <ExternalLink size={12} />
-                  </a>
-                </div>
-
-                {keySavedToast && (
-                  <div style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: '700', marginTop: '8px' }}>
-                    ✓ Groq key updated and saved for this session!
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* Upload PDF Modal */}
             {showUploadModal && (
