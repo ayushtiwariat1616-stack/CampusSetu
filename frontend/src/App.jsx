@@ -145,6 +145,7 @@ export default function App() {
           <LoginPage
             currentUser={currentUser}
             onLoginSuccess={handleLoginSuccess}
+            onLogout={handleLogout}
           />
         )}
 

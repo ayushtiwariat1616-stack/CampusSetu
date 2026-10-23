@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { api } from '../api';
 
-export default function LoginPage({ currentUser, onLoginSuccess }) {
+export default function LoginPage({ currentUser, onLoginSuccess, onLogout }) {
   const [tab, setTab] = useState(currentUser?.role === 'OPERATOR' ? 'operator' : 'password'); // 'password', 'google', 'operator', 'register'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -97,7 +97,7 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
   };
 
   const handleVerifyKey = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!operatorKeyInput.trim()) {
       setError('Please enter your individual operator key.');
       return;
@@ -110,13 +110,22 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
       setSuccessMsg('Operator cryptographic key verified. Access granted.');
       setTimeout(() => onLoginSuccess(res.data), 400);
     } catch (err) {
-      setError(err.message || 'Operator verification failed.');
+      const errMsg = err.message || 'Operator verification failed.';
+      if (errMsg.toLowerCase().includes('session expired') || errMsg.toLowerCase().includes('not authenticated') || errMsg.toLowerCase().includes('access denied')) {
+        setError('Session expired. Please sign in again with your official email and password.');
+        if (onLogout) onLogout();
+      } else {
+        setError(errMsg);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const fillCredentials = (userEmail, pass = 'CampusSetu@2026', key = '') => {
+    if (onLogout && needsKey) {
+      onLogout();
+    }
     setEmail(userEmail);
     setPassword(pass);
     if (key) {
@@ -344,6 +353,18 @@ export default function LoginPage({ currentUser, onLoginSuccess }) {
                 >
                   <KeyRound size={16} />
                   {loading ? 'Verifying Key...' : 'Verify Key & Open Queue'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setError('');
+                    if (onLogout) onLogout();
+                  }}
+                  className="btn btn-outline"
+                  style={{ width: '100%', padding: '10px', fontSize: '0.8125rem' }}
+                >
+                  ← Sign in with a different account
                 </button>
               </form>
             </div>

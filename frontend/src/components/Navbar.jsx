@@ -44,7 +44,7 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }
     } catch (e) {
       console.error(e);
     }
-  };
+  const isFullyAuthenticated = currentUser && (currentUser.role === 'STUDENT' || currentUser.operatorKeyVerified);
 
   return (
     <header style={{ position: 'sticky', top: 0, zIndex: 100, boxShadow: 'var(--shadow-md)' }}>
@@ -140,7 +140,7 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }
           {/* User / Auth Area */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
 
-            {currentUser ? (
+            {isFullyAuthenticated ? (
               <>
                 {/* Notification Bell */}
                 <div style={{ position: 'relative' }}>
@@ -337,7 +337,7 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }
           <button onClick={() => { onSelectTab('landing'); setMobileMenuOpen(false); }} className="btn btn-outline" style={{ justifyContent: 'flex-start' }}>Overview</button>
           <button onClick={() => { onSelectTab('how-it-works'); setMobileMenuOpen(false); }} className="btn btn-outline" style={{ justifyContent: 'flex-start' }}>How It Works</button>
           <button onClick={() => { onSelectTab('faq'); setMobileMenuOpen(false); }} className="btn btn-outline" style={{ justifyContent: 'flex-start' }}>Help & FAQ</button>
-          {!currentUser && (
+          {!isFullyAuthenticated && (
             <button onClick={() => { onSelectTab('login'); setMobileMenuOpen(false); }} className="btn btn-primary" style={{ marginTop: '8px' }}>Sign In</button>
           )}
         </div>
