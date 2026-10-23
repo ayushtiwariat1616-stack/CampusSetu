@@ -44,6 +44,8 @@ export default function Navbar({ currentUser, activeTab, onSelectTab, onLogout }
     } catch (e) {
       console.error(e);
     }
+  };
+
   const isFullyAuthenticated = currentUser && (currentUser.role === 'STUDENT' || currentUser.operatorKeyVerified);
 
   return (

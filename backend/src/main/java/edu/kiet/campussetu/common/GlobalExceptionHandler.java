@@ -44,8 +44,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleGeneralException(Exception ex) {
-        // Log on server, do not leak raw stack trace to user
+        ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("An unexpected error occurred. Please contact college support."));
+                .body(ApiResponse.error("An unexpected error occurred: " + ex.getMessage()));
     }
 }
